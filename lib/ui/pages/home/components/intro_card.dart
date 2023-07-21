@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../../generated/assets.gen.dart';
+import '../../../../generated/assets.gen.dart';
 
 class IntroCard<K, V> extends StatelessWidget {
   const IntroCard({

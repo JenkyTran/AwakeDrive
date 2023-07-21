@@ -1,17 +1,21 @@
-import 'dart:developer';
-
+import 'package:app_settings/app_settings.dart';
+import 'package:bluetooth_manager/bluetooth_manager.dart';
+import 'package:bluetooth_manager/models/bluetooth_models.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dart_extensions/dart_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../common/constants.dart';
-import '../../common/decorations.dart';
-import '../../generated/assets.gen.dart';
-import '../../locator/locator.dart';
-import 'components/intro_card.dart';
+import './components/intro_card.dart';
+import '../../../common/constants.dart';
+import '../../../common/decorations.dart';
+import '../../../common/functions.dart';
+import '../../../generated/assets.gen.dart';
+import '../../../permissions/permission_handler.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -59,23 +63,7 @@ class HomePage extends StatelessWidget {
             ),
             const Spacer(flex: 2),
             ElevatedButton(
-              onPressed: () {
-                GetIt.I<FlutterReactiveBle>().scanForDevices(
-                  withServices: [],
-                  scanMode: ScanMode.lowLatency,
-                ).listen(
-                  (device) {
-                    log(device.toString());
-                  },
-                  onDone: () {
-                    log('Done');
-                  },
-                  onError: (err, stackTrace) {
-                    log(err.toString());
-                  },
-                  cancelOnError: true,
-                );
-              },
+              onPressed: () => handleStartClicked(context),
               style: ButtonStyle(
                   backgroundColor: const MaterialStatePropertyAll(Color(0xFFFC5185)),
                   overlayColor: MaterialStatePropertyAll(Colors.white.withOpacity(0.1)),
@@ -100,5 +88,42 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> handleStartClicked(BuildContext context) async {
+    if (!await PermissionHandler.requestPermission()) {
+      Fluttertoast.showToast(
+        msg: 'You must allow bluetooth location permissions for the app to work properly. Please allow them in setting',
+      );
+      if (!await openAppSettings()) {
+        Fluttertoast.showToast(
+          msg: 'Can not open setting, exit after 1s',
+        );
+        await exitApp(const Duration(milliseconds: 1000));
+      }
+    }
+    if (!await FlutterBluePlus.instance.isAvailable) {
+      Fluttertoast.showToast(
+        msg: 'Bluetooth not support, exit after 1s',
+      );
+      await exitApp(const Duration(milliseconds: 1000));
+    }
+    if (!await FlutterBluePlus.instance.isOn) {
+      Fluttertoast.showToast(
+        msg: 'Bluetooth not enable, trying to turn on bluetooth',
+      );
+      await GetIt.I<BluetoothManager>().enableBluetooth().then((ActionResponse result) {
+        if (result == ActionResponse.bluetoothAlreadyOn || result == ActionResponse.bluetoothIsOn) {
+          Fluttertoast.showToast(
+            msg: 'Bluetooth enabled',
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Can not auto turn on bluetooth, please enable it in setting',
+          );
+          AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
+        }
+      });
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../main.dart';
-import '../ui/pages/home_page.dart';
+import '../ui/pages/home/home_page.dart';
 
 class Routes {
   static const mainRoute = '/';
