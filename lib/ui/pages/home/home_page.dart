@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -16,6 +17,7 @@ import '../../../common/decorations.dart';
 import '../../../common/functions.dart';
 import '../../../generated/assets.gen.dart';
 import '../../../permissions/permission_handler.dart';
+import '../../../router/route.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -124,6 +126,9 @@ class HomePage extends StatelessWidget {
           AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
         }
       });
+    }
+    if (context.mounted) {
+      context.go(Routes.devices);
     }
   }
 }

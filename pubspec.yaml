@@ -11,7 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   flutter_screenutil: ^5.8.4
   velocity_x: ^4.1.0
-  go_router: ^9.1.0
+  go_router: ^9.1.1
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3
   get_it: ^7.6.0
@@ -101,8 +101,6 @@ flutter:
   assets:
     - assets/images/svg/
     - assets/images/png/
-    - lib/ui/pages/
-    - lib/ui/pages/components/
 #    - assets/lotties/
 #    - assets/rives/
 #    - assets/colors/
