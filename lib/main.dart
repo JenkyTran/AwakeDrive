@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'blocs/bluetooth_connection/bluetooth_connection_cubit.dart';
+import 'blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
 import 'locator/locator.dart';
 import 'router/route.dart';
 import 'ui/pages/begin/begin_page.dart';
@@ -22,6 +23,9 @@ class Application extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => BluetoothConnectionCubit(),
+        ),
+        BlocProvider(
+          create: (context) => BluetoothDeviceConnectCubit(),
         ),
       ],
       child: ScreenUtilInit(
