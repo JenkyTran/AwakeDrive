@@ -127,7 +127,7 @@ class BeginPage extends StatelessWidget {
         }
       });
     }
-    if (!await FlutterBluePlus.instance.isOn) {
+    if (await FlutterBluePlus.instance.isOn) {
       if (context.mounted) {
         GoRouter.of(context).push(Routes.devices);
       }
