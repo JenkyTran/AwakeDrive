@@ -48,7 +48,7 @@ class BeginPage extends StatelessWidget {
             ).pOnly(left: 12, right: 12, top: 12, bottom: 44),
             CarouselSlider(
               options: CarouselOptions(
-                height: context.heightPx / 2.3,
+                height: context.heightPx / 2.2,
                 autoPlay: true,
                 autoPlayAnimationDuration: const Duration(milliseconds: 750),
                 autoPlayCurve: Curves.easeInOut,
