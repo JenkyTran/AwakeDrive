@@ -18,7 +18,7 @@ class Routes {
 }
 
 final _router = GoRouter(
-  initialLocation: Routes.devices,
+  initialLocation: Routes.begin,
   routes: [
     GoRoute(path: Routes.begin, builder: (_, __) => const BeginPage()),
     GoRoute(path: Routes.devices, builder: (_, __) => const DevicesPage()),

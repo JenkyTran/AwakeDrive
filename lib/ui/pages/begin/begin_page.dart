@@ -93,6 +93,8 @@ class BeginPage extends StatelessWidget {
   }
 
   Future<void> handleStartClicked(BuildContext context) async {
+    GoRouter.of(context).push(Routes.devices);
+    return;
     if (!await PermissionHandler.requestPermission()) {
       Fluttertoast.showToast(
         msg: 'You must allow bluetooth location permissions for the app to work properly. Please allow them in setting',
@@ -127,8 +129,10 @@ class BeginPage extends StatelessWidget {
         }
       });
     }
-    if (context.mounted) {
-      context.go(Routes.devices);
+    if (!await FlutterBluePlus.instance.isOn) {
+      if (context.mounted) {
+        GoRouter.of(context).push(Routes.devices);
+      }
     }
   }
 }

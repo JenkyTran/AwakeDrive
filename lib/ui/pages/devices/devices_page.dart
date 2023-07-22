@@ -9,12 +9,22 @@ class DevicesPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () {},
+            onPressed: () => context.pop(),
           ).p8(),
           const Spacer(),
+          Text(
+            'Available Devices',
+            style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
+          ),
+          const Spacer(),
+          const IconButton(
+            icon: SizedBox(),
+            onPressed: null,
+          ).p8(),
         ],
       ),
       body: ListView.builder(
