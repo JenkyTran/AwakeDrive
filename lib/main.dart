@@ -1,9 +1,10 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'locator/locator.dart';
 import 'router/route.dart';
-import 'ui/pages/home/home_page.dart';
+import 'ui/pages/begin/begin_page.dart';
 
 void main() {
   setUp();
@@ -28,7 +29,7 @@ class Application extends StatelessWidget {
           routerConfig: router,
         );
       },
-      child: const HomePage(),
+      child: const BeginPage(),
     );
   }
 }

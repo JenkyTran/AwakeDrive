@@ -2,20 +2,9 @@
 class Assets {
   Assets._();
 
-  static const String aliasesClass = 'lib/aliases/class.dart';
   static const String colorsColors = 'assets/colors/colors.xml';
-  static const String commonColors = 'lib/common/colors.dart';
-  static const String commonConstants = 'lib/common/constants.dart';
-  static const String commonDecorations = 'lib/common/decorations.dart';
-  static const String commonFunctions = 'lib/common/functions.dart';
-  static const String componentsIntroCard = 'lib/ui/pages/home/components/intro_card.dart';
-  static const String generatedAssets = 'lib/generated/assets.dart';
-  static const String homeHomePage = 'lib/ui/pages/home/home_page.dart';
-  static const String libMain = 'lib/main.dart';
-  static const String locatorLocator = 'lib/locator/locator.dart';
-  static const String permissionsPermissionHandler = 'lib/permissions/permission_handler.dart';
   static const String pngDemo = 'assets/images/png/demo.png';
-  static const String routerRoute = 'lib/router/route.dart';
+  static const String pngImg = 'assets/images/png/logo.png';
   static const String svgArrowThin = 'assets/images/svg/arrow-thin.svg';
 
 }
