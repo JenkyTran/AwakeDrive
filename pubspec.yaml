@@ -45,6 +45,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   permission_handler: ^10.4.3
   app_settings: ^5.0.0
+#  flutter_animated_icons: ^1.0.1
 
 dev_dependencies:
   flutter_test:

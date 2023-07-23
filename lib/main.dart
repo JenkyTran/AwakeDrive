@@ -25,7 +25,7 @@ class Application extends StatelessWidget {
           create: (context) => BluetoothConnectionCubit(),
         ),
         BlocProvider(
-          create: (context) => BluetoothDeviceConnectCubit(),
+          create: (context) => BluetoothDeviceScanCubit(),
         ),
       ],
       child: ScreenUtilInit(

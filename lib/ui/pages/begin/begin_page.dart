@@ -102,6 +102,8 @@ class BeginPage extends StatelessWidget {
           msg: 'Can not open setting, exit after 1s',
         );
         await exitApp(const Duration(milliseconds: 1000));
+      } else {
+        return;
       }
     }
     if (!await FlutterBluePlus.instance.isAvailable) {

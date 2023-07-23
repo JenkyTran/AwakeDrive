@@ -5,8 +5,8 @@ import 'package:nb_utils/nb_utils.dart';
 
 part 'bluetooth_device_scan_state.dart';
 
-class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceScanState> {
-  BluetoothDeviceConnectCubit() : super(BluetoothDeviceScanInitial());
+class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
+  BluetoothDeviceScanCubit() : super(BluetoothDeviceScanInitial());
 
   void subscribeBluetoothDevicesScan() {
     FlutterBluePlus.instance.scanResults.listen(
@@ -15,19 +15,22 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceScanState> {
       },
       onError: (err, stackTrace) {
         log('$err; $stackTrace');
+        emit(BluetoothDeviceScanError());
       },
       onDone: () {
+        emit(BluetoothDeviceScanStopped());
         log('Bluetooth stream done');
       },
-      cancelOnError: false,
+      cancelOnError: true,
     );
   }
 
   void startScan() {
-    FlutterBluePlus.instance.startScan(timeout: const Duration(minutes: 5));
+    emit(BluetoothDeviceScanning());
+    FlutterBluePlus.instance.startScan(timeout: const Duration(minutes: 1)).whenComplete(() => emit(BluetoothDeviceScanStopped()));
   }
 
   void stopScan() {
-    FlutterBluePlus.instance.stopScan();
+    FlutterBluePlus.instance.stopScan().whenComplete(() => emit(BluetoothDeviceScanStopped()));
   }
 }
