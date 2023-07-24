@@ -24,13 +24,13 @@ class BluetoothDeviceInfo {
     this.scannedBleDevice,
     this.scannedDevice,
     this.name,
-    this.address,
+    required this.address,
     this.rssi,
   });
 
   final String id;
   final String? name;
-  final String? address;
+  final String address;
   final List<dynamic>? uuids;
   final int? rssi;
   final ScanResult? scannedBleDevice;
