@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:app_settings/app_settings.dart';
-import 'package:flutter/material.dart' hide Badge;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
 import '../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
 import 'components/bluetooth_device_item.dart';
 import 'components/other_devices_item.dart';
@@ -42,12 +44,23 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
+      floatingActionButton: BlocBuilder<BluetoothDeviceConnectCubit, BluetoothDeviceConnectState>(
+        builder: (context, state) {
+          if (state is BluetoothDeviceConnected) {
+            return FloatingActionButton(
+              child: const Icon(Icons.arrow_forward_rounded),
+              onPressed: () {},
+            );
+          }
+          return const SizedBox();
+        },
+      ),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
+            onPressed: () => GoRouter.of(context).pop(),
           ).p8(),
           const Spacer(),
           BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
@@ -87,7 +100,8 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
         builder: (context, state) {
           final Iterable<BluetoothDeviceInfo> listFilter =
               BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull);
-          final Iterable<BluetoothDeviceInfo> listOthers = BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
+          final Iterable<BluetoothDeviceInfo> listOthers =
+              BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
           return ListView.builder(
             itemCount: listFilter.length + 1,
             padding: const EdgeInsets.all(8),
@@ -100,12 +114,12 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                   onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
                 );
               } else if (index == listFilter.length) {
-                  return OtherItem(
-                    icon: Icons.device_unknown_rounded,
-                    label: 'Other devices (${listOthers.length})',
-                    color: const Color(0xFF36A8FF),
-                    onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
-                  );
+                return OtherItem(
+                  icon: Icons.device_unknown_rounded,
+                  label: 'Other devices (${listOthers.length})',
+                  color: const Color(0xFF36A8FF),
+                  onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
+                );
               }
               final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {
                 final int nameCompareResult = (a.name ?? 'z').compareTo(b.name ?? 'z');

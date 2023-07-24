@@ -88,16 +88,16 @@ class BluetoothDeviceItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'MAC: ${info.macAddress}',
+                    'ADDRESS: ${info.address}',
                     overflow: TextOverflow.fade,
                     style: context.theme.textTheme.bodyMedium!.copyWith(
                       fontSize: 12,
                       color: const Color(0xFF999999),
                     ),
                   ),
-                  for (final uid in info.uuids)
+                  for (final uid in info.uuids ?? [])
                     Text(
-                      'UUID${info.uuids.indexOf(uid)}: $uid',
+                      'UUID${info.uuids?.indexOf(uid)}: $uid',
                       overflow: TextOverflow.fade,
                       style: context.theme.textTheme.bodyMedium!.copyWith(
                         fontSize: 12,
@@ -107,16 +107,6 @@ class BluetoothDeviceItem extends StatelessWidget {
                   Text(
                     'RSSI: ${info.rssi}',
                     overflow: TextOverflow.fade,
-                    style: context.theme.textTheme.bodyMedium!.copyWith(
-                      fontSize: 12,
-                      color: const Color(0xFF999999),
-                    ),
-                  ),
-                  Text(
-                    'MSDKey: ${info.manufacturerSpecificData?.keys}',
-                    overflow: TextOverflow.fade,
-                    maxLines: 2,
-                    softWrap: true,
                     style: context.theme.textTheme.bodyMedium!.copyWith(
                       fontSize: 12,
                       color: const Color(0xFF999999),

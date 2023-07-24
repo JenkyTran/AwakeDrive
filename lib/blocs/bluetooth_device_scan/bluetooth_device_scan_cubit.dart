@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue_elves/flutter_blue_elves.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_bluetooth_serial_ble/flutter_bluetooth_serial_ble.dart';
 
 part 'bluetooth_device_scan_state.dart';
 
@@ -9,17 +10,42 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
   final List<BluetoothDeviceInfo> scannedDevices = [];
 
   void subscribeBluetoothDevicesScan() {
-    FlutterBlueElves.instance.startScan(30000).listen(
+    Future.delayed(const Duration(seconds: 60), () {
+      FlutterBluetoothSerial.instance.cancelDiscovery();
+      emit(BluetoothDeviceScanStopped());
+    });
+    FlutterBluetoothSerial.instance.startDiscovery().listen(
       (event) {
-        if (!scannedDevices.map((e) => e.id).contains(event.id)) {
+        if (!scannedDevices.map((e) => e.id).contains(event.device.address)) {
           final info = BluetoothDeviceInfo(
-            id: event.id,
-            name: event.localName,
+            id: event.device.address,
+            name: event.device.name,
             rssi: event.rssi,
-            uuids: event.uuids,
-            macAddress: event.macAddress,
-            manufacturerSpecificData: event.manufacturerSpecificData,
-            row: event.row,
+            address: event.device.address,
+            scannedDevice: event,
+          );
+          scannedDevices.add(info);
+          emit(BluetoothDeviceScanned(device: info));
+        }
+      },
+      onError: (err, stackTrace) {
+        emit(BluetoothDeviceScanError());
+      },
+      onDone: () {
+        emit(BluetoothDeviceScanStopped());
+      },
+      cancelOnError: true,
+    );
+    FlutterBluePlus.scan(timeout: const Duration(seconds: 60)).listen(
+      (event) {
+        if (!scannedDevices.map((e) => e.id).contains(event.device.remoteId.str)) {
+          final info = BluetoothDeviceInfo(
+            id: event.device.remoteId.str,
+            name: event.device.localName,
+            rssi: event.rssi,
+            uuids: event.advertisementData.serviceUuids,
+            address: event.device.remoteId.str,
+            scannedBleDevice: event,
           );
           scannedDevices.add(info);
           emit(BluetoothDeviceScanned(device: info));
@@ -41,25 +67,10 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
     }
     scannedDevices.removeWhere((element) => true);
     subscribeBluetoothDevicesScan();
-    FlutterBlueElves.instance.getHideConnectedDevices().then((values) {
-      for (final event in values) {
-        if (!scannedDevices.map((e) => e.id).contains(event.id)) {
-          final info = BluetoothDeviceInfo(
-            id: event.id,
-            name: event.name,
-            uuids: event.uuids,
-            macAddress: event.macAddress,
-          );
-          scannedDevices.add(info);
-          emit(BluetoothDeviceScanned(device: info));
-        }
-      }
-    });
     emit(BluetoothDeviceScanning());
   }
 
   void stopScan() {
-    FlutterBlueElves.instance.stopScan();
-    emit(BluetoothDeviceScanStopped());
+    FlutterBluePlus.stopScan().whenComplete(() => emit(BluetoothDeviceScanStopped()));
   }
 }

@@ -20,19 +20,19 @@ class BluetoothDeviceScanError extends BluetoothDeviceScanState {}
 class BluetoothDeviceInfo {
   const BluetoothDeviceInfo({
     required this.id,
-    required this.uuids,
+    this.uuids,
+    this.scannedBleDevice,
+    this.scannedDevice,
     this.name,
-    this.macAddress,
+    this.address,
     this.rssi,
-    this.manufacturerSpecificData,
-    this.row,
   });
 
   final String id;
   final String? name;
-  final String? macAddress;
-  final List<dynamic> uuids;
+  final String? address;
+  final List<dynamic>? uuids;
   final int? rssi;
-  final Map<dynamic, dynamic>? manufacturerSpecificData;
-  final Uint8List? row;
+  final ScanResult? scannedBleDevice;
+  final BluetoothDiscoveryResult? scannedDevice;
 }
