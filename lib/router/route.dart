@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
 
+import '../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
 import '../ui/pages/about/about_page.dart';
 import '../ui/pages/begin/begin_page.dart';
 import '../ui/pages/devices/devices_page.dart';
+import '../ui/pages/devices/other_devices_page.dart';
 import '../ui/pages/history/history_page.dart';
 import '../ui/pages/home/home_page.dart';
 import '../ui/pages/music_player/music_player_page.dart';
@@ -10,6 +12,7 @@ import '../ui/pages/music_player/music_player_page.dart';
 class Routes {
   static const begin = '/begin';
   static const devices = '/devices';
+  static const otherDevices = 'others';
   static const main = '/';
   static const home = 'home';
   static const musicPlayer = 'music-player';
@@ -21,7 +24,18 @@ final _router = GoRouter(
   initialLocation: Routes.begin,
   routes: [
     GoRoute(path: Routes.begin, builder: (_, __) => const BeginPage()),
-    GoRoute(path: Routes.devices, builder: (_, __) => const DevicesPage()),
+    GoRoute(
+      path: Routes.devices,
+      builder: (_, __) => const DevicesPage(),
+      routes: [
+        GoRoute(path: Routes.otherDevices, builder: (_, state) {
+          final List<BluetoothDeviceInfo> data = state.extra as List<BluetoothDeviceInfo>? ?? [];
+          return OtherDevicesPage(
+            data: data,
+          );
+        }),
+      ],
+    ),
     GoRoute(
       path: Routes.main,
       redirect: (_, __) => Routes.home,

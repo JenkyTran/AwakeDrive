@@ -71,6 +71,7 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
   }
 
   void stopScan() {
+    FlutterBluetoothSerial.instance.cancelDiscovery();
     FlutterBluePlus.stopScan().whenComplete(() => emit(BluetoothDeviceScanStopped()));
   }
 }

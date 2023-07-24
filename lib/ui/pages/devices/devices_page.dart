@@ -8,6 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
 import '../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
+import '../../../router/route.dart';
 import 'components/bluetooth_device_item.dart';
 import 'components/other_devices_item.dart';
 
@@ -35,6 +36,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
 
   @override
   void dispose() {
+    BlocProvider.of<BluetoothDeviceScanCubit>(context).stopScan();
     _reloadIconAnimation.dispose();
     _reloadIconAnimationController.dispose();
     super.dispose();
@@ -103,22 +105,22 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
           final Iterable<BluetoothDeviceInfo> listOthers =
               BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
           return ListView.builder(
-            itemCount: listFilter.length + 1,
+            itemCount: listFilter.length + 2,
             padding: const EdgeInsets.all(8),
             itemBuilder: (context, index) {
-              if (index == 0) {
+              if (index == listFilter.length) {
                 return OtherItem(
                   icon: Icons.handyman_rounded,
                   label: 'Manual connect for non-listed devices',
-                  color: const Color(0xFF36A8FF),
-                  onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
+                  color: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? const Color(0xFF888888) : const Color(0xFF36A8FF),
+                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
                 );
-              } else if (index == listFilter.length) {
+              } else if (index == listFilter.length + 1) {
                 return OtherItem(
                   icon: Icons.device_unknown_rounded,
                   label: 'Other devices (${listOthers.length})',
-                  color: const Color(0xFF36A8FF),
-                  onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
+                  color: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? const Color(0xFF888888) : const Color(0xFF36A8FF),
+                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : context.push('${Routes.devices}/${Routes.otherDevices}', extra: listOthers.toList()),
                 );
               }
               final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {
@@ -128,7 +130,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                 } else {
                   return a.id.compareTo(b.id);
                 }
-              })[index - 1];
+              })[index];
               return BluetoothDeviceItem(
                 info: device,
               ).pSymmetric(v: 2);

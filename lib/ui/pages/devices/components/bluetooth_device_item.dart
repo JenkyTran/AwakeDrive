@@ -9,9 +9,11 @@ class BluetoothDeviceItem extends StatelessWidget {
   BluetoothDeviceItem({
     super.key,
     required this.info,
+    this.reactive = true,
   });
 
   final BluetoothDeviceInfo info;
+  final bool reactive;
   final ExpandableController _controller = ExpandableController(initialExpanded: false);
 
   @override
@@ -118,21 +120,31 @@ class BluetoothDeviceItem extends StatelessWidget {
               SizedBox(
                 width: 24,
                 height: 24,
-                child: BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
-                  builder: (context, state) {
-                    return IconButton(
-                      onPressed: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : _controller.toggle,
-                      padding: EdgeInsets.zero,
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                child: reactive
+                    ? BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(builder: (context, state) {
+                        return IconButton(
+                          onPressed: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : _controller.toggle,
+                          padding: EdgeInsets.zero,
+                          style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                          ),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Color(0xFF888888),
+                          ),
+                        );
+                      })
+                    : IconButton(
+                        onPressed: _controller.toggle,
+                        padding: EdgeInsets.zero,
+                        style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                        ),
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Color(0xFF888888),
+                        ),
                       ),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: Color(0xFF888888),
-                      ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
