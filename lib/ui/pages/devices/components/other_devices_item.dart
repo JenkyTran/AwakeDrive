@@ -28,7 +28,7 @@ class OtherItem extends StatelessWidget {
       ),
       color: const Color(0xFFF5F5F5),
       child: InkWell(
-        onTap: () {},
+        onTap: onClick,
         borderRadius: BorderRadius.circular(16),
         child: Row(
           children: [
