@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:bluetooth_manager/bluetooth_manager.dart';
+import 'package:bluetooth_manager/models/bluetooth_models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 part 'bluetooth_connection_state.dart';
@@ -9,18 +11,14 @@ class BluetoothConnectionCubit extends Cubit<BluetoothConnectionState> {
   BluetoothConnectionCubit() : super(BluetoothConnectionInitial());
 
   void subscribeBluetoothStatus() {
-    FlutterBluePlus.instance.adapterState.listen(
+    GetIt.I<BluetoothManager>().getBluetoothStateStream().listen(
       (event) {
         switch (event) {
-          case BluetoothAdapterState.on:
+          case BluetoothState.on:
             emit(BluetoothReady());
             break;
-          case BluetoothAdapterState.off:
-          case BluetoothAdapterState.unknown:
-          case BluetoothAdapterState.unauthorized:
-          case BluetoothAdapterState.turningOff:
-          case BluetoothAdapterState.turningOn:
-          case BluetoothAdapterState.unavailable:
+          case BluetoothState.off:
+          case BluetoothState.uknow:
           default:
             emit(BluetoothUnavailable());
             break;
@@ -34,28 +32,5 @@ class BluetoothConnectionCubit extends Cubit<BluetoothConnectionState> {
       },
       cancelOnError: false,
     );
-  }
-
-  void subscribeBluetoothDevicesScan() {
-    FlutterBluePlus.instance.scanResults.listen(
-      (event) {
-        //
-      },
-      onError: (err, stackTrace) {
-        log('$err; $stackTrace');
-      },
-      onDone: () {
-        log('Bluetooth stream done');
-      },
-      cancelOnError: false,
-    );
-  }
-
-  void startScan() {
-    FlutterBluePlus.instance.startScan(timeout: const Duration(minutes: 5));
-  }
-
-  void stopScan() {
-    FlutterBluePlus.instance.stopScan();
   }
 }

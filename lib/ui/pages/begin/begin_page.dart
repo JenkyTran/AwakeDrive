@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:bluetooth_manager/bluetooth_manager.dart';
 import 'package:bluetooth_manager/models/bluetooth_models.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dart_extensions/dart_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_elves/flutter_blue_elves.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -93,9 +95,15 @@ class BeginPage extends StatelessWidget {
   }
 
   Future<void> handleStartClicked(BuildContext context) async {
+    if (!Platform.isAndroid) {
+      Fluttertoast.showToast(
+        msg: 'Device not support, only Android',
+      );
+      await exitApp(const Duration(milliseconds: 1000));
+    }
     if (!await PermissionHandler.requestPermission()) {
       Fluttertoast.showToast(
-        msg: 'You must allow bluetooth location permissions for the app to work properly. Please allow them in setting',
+        msg: 'You must allow bluetooth and location permissions for the app to work properly. Please allow them in setting',
       );
       if (!await openAppSettings()) {
         Fluttertoast.showToast(
@@ -106,36 +114,108 @@ class BeginPage extends StatelessWidget {
         return;
       }
     }
-    if (!await FlutterBluePlus.instance.isAvailable) {
-      Fluttertoast.showToast(
-        msg: 'Bluetooth not support, exit after 1s',
-      );
-      await exitApp(const Duration(milliseconds: 1000));
-    }
-    if (!await FlutterBluePlus.instance.isOn) {
-      Fluttertoast.showToast(
-        msg: 'Bluetooth not enable, trying to turn on bluetooth',
-      );
-      await GetIt.I<BluetoothManager>().enableBluetooth().then((ActionResponse result) {
-        if (result == ActionResponse.bluetoothAlreadyOn || result == ActionResponse.bluetoothIsOn) {
+    if (Platform.isAndroid) {
+      FlutterBlueElves.instance.androidCheckBlueLackWhat().then((values) async {
+        if (values.contains(AndroidBluetoothLack.bluetoothPermission)) {
+          FlutterBlueElves.instance.androidApplyBluetoothPermission((isOk) async {
+            if (isOk) {
+              Fluttertoast.showToast(
+                msg: 'Bluetooth permission allowed',
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: 'Can not grant bluetooth permission, exit after 1s',
+              );
+              await exitApp(const Duration(milliseconds: 1000));
+            }
+          });
+        }
+        if (values.contains(AndroidBluetoothLack.locationPermission)) {
+          FlutterBlueElves.instance.androidApplyLocationPermission((isOk) async {
+            if (isOk) {
+              Fluttertoast.showToast(
+                msg: 'Location permission allowed',
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: 'Can not grant location permission, exit after 1s',
+              );
+              await exitApp(const Duration(milliseconds: 1000));
+            }
+          });
+        }
+        if (values.contains(AndroidBluetoothLack.locationFunction)) {
           Fluttertoast.showToast(
-            msg: 'Bluetooth enabled',
+            msg: 'Location not enable, trying to enable location',
           );
+          FlutterBlueElves.instance.androidOpenLocationService((isOk) async {
+            if (isOk) {
+              Fluttertoast.showToast(
+                msg: 'Location enabled',
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: 'Can not enable location, exit after 1s',
+              );
+              await exitApp(const Duration(milliseconds: 1000));
+            }
+          });
+        }
+        if (values.contains(AndroidBluetoothLack.bluetoothFunction)) {
+          Fluttertoast.showToast(
+            msg: 'Bluetooth not enable, trying to enable bluetooth',
+          );
+          await GetIt.I<BluetoothManager>().enableBluetooth().then((ActionResponse result) {
+            if (result == ActionResponse.bluetoothAlreadyOn || result == ActionResponse.bluetoothIsOn) {
+              Fluttertoast.showToast(
+                msg: 'Bluetooth enabled',
+              );
+              if (context.mounted) {
+                GoRouter.of(context).push(Routes.devices);
+              }
+            } else {
+              FlutterBlueElves.instance.androidOpenBluetoothService((isOk) {
+                if (isOk) {
+                  Fluttertoast.showToast(
+                    msg: 'Bluetooth enabled',
+                  );
+                  if (context.mounted) {
+                    GoRouter.of(context).push(Routes.devices);
+                  }
+                } else {
+                  Fluttertoast.showToast(
+                    msg: 'Can not auto turn on bluetooth, please enable it in setting',
+                  );
+                  AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
+                }
+              });
+            }
+          });
+        }
+        if (values.isEmptyOrNull) {
           if (context.mounted) {
             GoRouter.of(context).push(Routes.devices);
           }
-        } else {
-          Fluttertoast.showToast(
-            msg: 'Can not auto turn on bluetooth, please enable it in setting',
-          );
-          AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
         }
       });
     }
-    if (await FlutterBluePlus.instance.isOn) {
-      if (context.mounted) {
-        GoRouter.of(context).push(Routes.devices);
-      }
+    if (Platform.isIOS) {
+      FlutterBlueElves.instance.iosCheckBluetoothState().then((value) {
+        // todo
+        if (value == IosBluetoothState.unKnown) {
+          ///Bluetooth is not initialized
+        } else if (value == IosBluetoothState.resetting) {
+          ///Bluetooth is resetting
+        } else if (value == IosBluetoothState.unSupport) {
+          ///Bluetooth not support
+        } else if (value == IosBluetoothState.unAuthorized) {
+          ///No give bluetooth permission
+        } else if (value == IosBluetoothState.poweredOff) {
+          ///bluetooth powerOff
+        } else {
+          ///bluetooth is ok
+        }
+      });
     }
   }
 }

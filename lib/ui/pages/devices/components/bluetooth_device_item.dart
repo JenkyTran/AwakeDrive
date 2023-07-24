@@ -28,7 +28,7 @@ class BluetoothDeviceItem extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name),
+                Text(name == '' ? 'Unnamed Device' : name),
                 Text(
                   id,
                   style: context.theme.textTheme.bodyMedium!.copyWith(
@@ -49,7 +49,7 @@ class BluetoothDeviceItem extends StatelessWidget {
                   backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
                 ),
                 icon: const Icon(
-                  Icons.keyboard_arrow_right_rounded,
+                  Icons.keyboard_arrow_down_rounded,
                   color: Color(0xFF888888),
                 ),
               ),
