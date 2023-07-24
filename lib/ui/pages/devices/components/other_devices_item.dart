@@ -7,16 +7,12 @@ class OtherItem extends StatelessWidget {
     required this.icon,
     required this.onClick,
     this.label = 'Other Devices',
-    this.count = 0,
     this.color,
-    this.showCount = true,
   });
 
-  final int count;
   final String label;
   final IconData icon;
   final Color? color;
-  final bool showCount;
   final VoidCallback onClick;
 
   @override
@@ -37,7 +33,7 @@ class OtherItem extends StatelessWidget {
               color: color,
             ).pOnly(right: 16),
             Text(
-              '$label${showCount ? ' ($count)' : ''}',
+              label,
               style: context.textTheme.bodyLarge!.copyWith(
                 color: color,
               ),

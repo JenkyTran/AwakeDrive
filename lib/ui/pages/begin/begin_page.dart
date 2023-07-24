@@ -170,8 +170,10 @@ class BeginPage extends StatelessWidget {
               Fluttertoast.showToast(
                 msg: 'Bluetooth enabled',
               );
-              if (context.mounted) {
-                GoRouter.of(context).push(Routes.devices);
+              if (values.length == 1) {
+                if (context.mounted) {
+                  GoRouter.of(context).push(Routes.devices);
+                }
               }
             } else {
               FlutterBlueElves.instance.androidOpenBluetoothService((isOk) {
@@ -179,9 +181,6 @@ class BeginPage extends StatelessWidget {
                   Fluttertoast.showToast(
                     msg: 'Bluetooth enabled',
                   );
-                  if (context.mounted) {
-                    GoRouter.of(context).push(Routes.devices);
-                  }
                 } else {
                   Fluttertoast.showToast(
                     msg: 'Can not auto turn on bluetooth, please enable it in setting',

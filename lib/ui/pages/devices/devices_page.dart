@@ -52,7 +52,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
           const Spacer(),
           BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
             builder: (context, state) => Text(
-              'Available Devices (${BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.length})',
+              'Available Devices (${BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull).length})',
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
             ),
           ),
@@ -84,44 +84,42 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
         ],
       ),
       body: BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
-        // buildWhen: (_, state) => state is BluetoothDeviceScanned,
         builder: (context, state) {
-          final listFilter = BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull);
-          final listOthers = BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
+          final Iterable<BluetoothDeviceInfo> listFilter =
+              BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull);
+          final Iterable<BluetoothDeviceInfo> listOthers = BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
           return ListView.builder(
-              itemCount: listFilter.length + 2,
-              padding: const EdgeInsets.all(8),
-              itemBuilder: (context, index) {
-                if (index == listFilter.length) {
+            itemCount: listFilter.length + 1,
+            padding: const EdgeInsets.all(8),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return OtherItem(
+                  icon: Icons.handyman_rounded,
+                  label: 'Manual connect for non-listed devices',
+                  color: const Color(0xFF36A8FF),
+                  onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
+                );
+              } else if (index == listFilter.length) {
                   return OtherItem(
                     icon: Icons.device_unknown_rounded,
-                    count: listOthers.length,
-                    color: const Color(0xFF36A8FF),
-                    onClick: () {},
-                  );
-                } else if (index == listFilter.length + 1) {
-                  return OtherItem(
-                    icon: Icons.handyman_rounded,
-                    label: "Can't find your device?",
-                    count: listOthers.length,
-                    showCount: false,
+                    label: 'Other devices (${listOthers.length})',
                     color: const Color(0xFF36A8FF),
                     onClick: () => AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
                   );
+              }
+              final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {
+                final int nameCompareResult = (a.name ?? 'z').compareTo(b.name ?? 'z');
+                if (nameCompareResult != 0) {
+                  return nameCompareResult;
+                } else {
+                  return a.id.compareTo(b.id);
                 }
-                final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {
-                  final int nameCompareResult = (a.name ?? 'z').compareTo(b.name ?? 'z');
-                  if (nameCompareResult != 0) {
-                    return nameCompareResult;
-                  } else {
-                    return a.id.compareTo(b.id);
-                  }
-                })[index];
-                return BluetoothDeviceItem(
-                  id: device.id,
-                  name: device.name ?? '',
-                ).pSymmetric(v: 2);
-              });
+              })[index - 1];
+              return BluetoothDeviceItem(
+                info: device,
+              ).pSymmetric(v: 2);
+            },
+          );
         },
       ),
     );

@@ -1,15 +1,18 @@
-
-
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
+
 class BluetoothDeviceItem extends StatelessWidget {
-  const BluetoothDeviceItem({
-    super.key, required this.id, this.name = 'Unnamed Device',
+  BluetoothDeviceItem({
+    super.key,
+    required this.info,
   });
 
-  final String id;
-  final String name;
+  final BluetoothDeviceInfo info;
+  final ExpandableController _controller = ExpandableController(initialExpanded: false);
 
   @override
   Widget build(BuildContext context) {
@@ -22,39 +25,128 @@ class BluetoothDeviceItem extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         borderRadius: BorderRadius.circular(16),
-        child: Row(
-          children: [
-            const Icon(Icons.bluetooth).pOnly(right: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name == '' ? 'Unnamed Device' : name),
-                Text(
-                  id,
-                  style: context.theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xFF999999),
+        child: ExpandablePanel(
+          controller: _controller,
+          collapsed: Row(
+            children: [
+              const Icon(Icons.bluetooth).pOnly(right: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    info.name.isEmptyOrNull ? 'Unnamed Device' : info.name!,
+                    overflow: TextOverflow.fade,
                   ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: IconButton(
-                onPressed: () {},
-                padding: EdgeInsets.zero,
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
-                ),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF888888),
+                  Text(
+                    info.id,
+                    overflow: TextOverflow.fade,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF999999),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : _controller.toggle,
+                      padding: EdgeInsets.zero,
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                      ),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Color(0xFF888888),
+                      ),
+                    );
+                  },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+          expanded: Row(
+            children: [
+              const Icon(Icons.bluetooth).pOnly(right: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    info.name.isEmptyOrNull ? 'Unnamed Device' : info.name!,
+                    overflow: TextOverflow.fade,
+                  ),
+                  Text(
+                    'ID: ${info.id}',
+                    overflow: TextOverflow.fade,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF999999),
+                    ),
+                  ),
+                  Text(
+                    'MAC: ${info.macAddress}',
+                    overflow: TextOverflow.fade,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF999999),
+                    ),
+                  ),
+                  for (final uid in info.uuids)
+                    Text(
+                      'UUID${info.uuids.indexOf(uid)}: $uid',
+                      overflow: TextOverflow.fade,
+                      style: context.theme.textTheme.bodyMedium!.copyWith(
+                        fontSize: 12,
+                        color: const Color(0xFF999999),
+                      ),
+                    ),
+                  Text(
+                    'RSSI: ${info.rssi}',
+                    overflow: TextOverflow.fade,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF999999),
+                    ),
+                  ),
+                  Text(
+                    'MSDKey: ${info.manufacturerSpecificData?.keys}',
+                    overflow: TextOverflow.fade,
+                    maxLines: 2,
+                    softWrap: true,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF999999),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : _controller.toggle,
+                      padding: EdgeInsets.zero,
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                      ),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Color(0xFF888888),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          theme: const ExpandableThemeData(alignment: Alignment.center),
         ).pOnly(left: 16, right: 8, top: 20, bottom: 20),
       ),
     );
