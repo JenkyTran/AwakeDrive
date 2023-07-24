@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../../generated/assets.gen.dart';
+import '../../../../generated/assets.gen.dart';
 
 class IntroCard<K, V> extends StatelessWidget {
   const IntroCard({
@@ -24,7 +24,7 @@ class IntroCard<K, V> extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Assets.images.png.demo.image().pOnly(left: 36, right: 36, bottom: 36),
-          ).pOnly(bottom: 20),
+          ).pOnly(bottom: 28),
           Column(
             children: [
               const Spacer(),
@@ -43,7 +43,7 @@ class IntroCard<K, V> extends StatelessWidget {
                     style: context.bodyMedium!.copyWith(
                       color: const Color(0xFFFC5185),
                     ),
-                  ).pOnly(top: 2),
+                  ).pOnly(top: 4),
                 ],
               )
             ],

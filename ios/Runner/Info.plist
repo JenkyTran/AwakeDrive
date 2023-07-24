@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>mind_reflect</string>
+	<string>Awake Drives</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -47,9 +47,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Permission options for the `bluetooth` -->
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>The app uses bluetooth to find, connect and transfer data between different devices</string>
+	<string>bluetooth</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>The app uses bluetooth to find, connect and transfer data between different devices</string>
+	<string>bluetooth</string>
+
+	<!-- Permission options for the `location` group -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need location when in use</string>
 </dict>
 </plist>

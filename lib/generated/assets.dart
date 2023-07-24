@@ -4,6 +4,7 @@ class Assets {
 
   static const String colorsColors = 'assets/colors/colors.xml';
   static const String pngDemo = 'assets/images/png/demo.png';
+  static const String pngLogo = 'assets/images/png/logo.png';
   static const String svgArrowThin = 'assets/images/svg/arrow-thin.svg';
 
 }
