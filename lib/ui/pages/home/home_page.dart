@@ -5,6 +5,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Icon(Icons.back_hand)
+        ],
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: Text('Demo'),
+      ),
+    );
   }
 }
