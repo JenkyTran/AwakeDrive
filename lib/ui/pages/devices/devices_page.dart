@@ -120,7 +120,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                   icon: Icons.device_unknown_rounded,
                   label: 'Other devices (${listOthers.length})',
                   color: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? const Color(0xFF888888) : const Color(0xFF36A8FF),
-                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : context.push('${Routes.devices}/${Routes.otherDevices}', extra: listOthers.toList()),
+                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : context.push(Routes.nested([Routes.devices, Routes.otherDevices]), extra: listOthers.toList()),
                 );
               }
               final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {

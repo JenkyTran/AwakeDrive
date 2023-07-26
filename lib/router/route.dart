@@ -18,6 +18,18 @@ class Routes {
   static const musicPlayer = 'music-player';
   static const history = 'history';
   static const about = 'about';
+
+  static String nested(List<String> args) {
+    String path = '';
+    for(final String v in args) {
+      if (v.startsWith('/')) {
+        path = '$path$v';
+      } else {
+        path = '$path/$v';
+      }
+    }
+    return path;
+  }
 }
 
 final _router = GoRouter(
@@ -38,7 +50,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: Routes.main,
-      redirect: (_, __) => '${Routes.main}${Routes.home}',
+      redirect: (_, __) => Routes.nested([Routes.main, Routes.home]),
       routes: [
         GoRoute(path: Routes.home, builder: (_, __) => const HomePage()),
         GoRoute(path: Routes.musicPlayer, builder: (_, __) => const MusicPlayerPage()),
