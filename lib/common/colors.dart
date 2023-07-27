@@ -19,6 +19,15 @@ class Gradients {
       Color(0xFF136B98),
     ],
   );
+  static const shimmerGradient = LinearGradient(
+    // begin: Alignment(0.9, 0.9),
+    // end: Alignment(-0.9, -0.9),
+    // stops: [0, 0.1667, 0.33333, 0.6, 0.5854, 0.6167, 0.6667, 0.6668, 0.8883, 0.9031, 1],
+    colors: [
+      Color(0xFF27C2FA),
+      Color(0xFF5387EC),
+    ],
+  );
 }
 
 class Colors {

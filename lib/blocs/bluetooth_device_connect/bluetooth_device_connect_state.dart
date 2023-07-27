@@ -1,42 +1,35 @@
 part of 'bluetooth_device_connect_cubit.dart';
 
 @immutable
-abstract class BluetoothDeviceConnectState {}
+abstract class BluetoothDeviceConnectState {
+  const BluetoothDeviceConnectState({required this.device});
+  final BluetoothDeviceInfo? device;
+}
 
-class BluetoothDeviceConnectInitial extends BluetoothDeviceConnectState {}
+class BluetoothDeviceConnectInitial extends BluetoothDeviceConnectState {
+  const BluetoothDeviceConnectInitial() : super(device: null);
+}
 
 class BluetoothDeviceConnecting extends BluetoothDeviceConnectState {
-  BluetoothDeviceConnecting({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceConnecting({required BluetoothDeviceInfo device}) : super(device: device);
 }
 
 class BluetoothDeviceConnected extends BluetoothDeviceConnectState {
-  BluetoothDeviceConnected({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceConnected({required BluetoothDeviceInfo device}) : super(device: device);
 }
 
 class BluetoothDeviceDisconnecting extends BluetoothDeviceConnectState {
-  BluetoothDeviceDisconnecting({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceDisconnecting({required BluetoothDeviceInfo device}) : super(device: device);
 }
 
 class BluetoothDeviceDisconnected extends BluetoothDeviceConnectState {
-  BluetoothDeviceDisconnected({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceDisconnected({required BluetoothDeviceInfo device}) : super(device: device);
 }
 
 class BluetoothDeviceConnectError extends BluetoothDeviceConnectState {
-  BluetoothDeviceConnectError({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceConnectError({required BluetoothDeviceInfo device}) : super(device: device);
 }
 
 class BluetoothDeviceDisconnectError extends BluetoothDeviceConnectState {
-  BluetoothDeviceDisconnectError({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  const BluetoothDeviceDisconnectError({required BluetoothDeviceInfo device}) : super(device: device);
 }

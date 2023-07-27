@@ -10,6 +10,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -139,6 +140,10 @@ class BeginPage extends StatelessWidget {
           AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
         }
       });
+    }
+    if (!await GetIt.I<Location>().serviceEnabled()) {
+      await GetIt.I<Location>().requestService();
+      return;
     }
     if (await FlutterBluePlus.isOn) {
       if (context.mounted) {

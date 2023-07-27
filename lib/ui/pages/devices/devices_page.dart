@@ -8,6 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
 import '../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
+import '../../../blocs/bluetooth_devices_connect/bluetooth_devices_connect_cubit.dart';
 import '../../../router/route.dart';
 import 'components/bluetooth_device_item.dart';
 import 'components/other_devices_item.dart';
@@ -36,7 +37,6 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
 
   @override
   void dispose() {
-    BlocProvider.of<BluetoothDeviceScanCubit>(context).stopScan();
     _reloadIconAnimation.dispose();
     _reloadIconAnimationController.dispose();
     super.dispose();
@@ -46,7 +46,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
-      floatingActionButton: BlocBuilder<BluetoothDeviceConnectCubit, BluetoothDeviceConnectState>(
+      floatingActionButton: BlocBuilder<BluetoothDevicesConnectCubit, BluetoothDevicesConnectState>(
         builder: (context, state) {
           if (state is BluetoothDeviceConnected) {
             return FloatingActionButton(
@@ -131,9 +131,12 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                   return a.id.compareTo(b.id);
                 }
               })[index];
-              return BluetoothDeviceItem(
-                info: device,
-              ).pSymmetric(v: 2);
+              return BlocProvider(
+                create: (BuildContext context) => BluetoothDeviceConnectCubit(),
+                child: BluetoothDeviceItem(
+                  info: device,
+                ).pSymmetric(v: 2),
+              );
             },
           );
         },

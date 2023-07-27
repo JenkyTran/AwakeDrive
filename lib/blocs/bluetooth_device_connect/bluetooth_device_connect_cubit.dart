@@ -10,8 +10,7 @@ import '../bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
 part 'bluetooth_device_connect_state.dart';
 
 class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
-  BluetoothDeviceConnectCubit() : super(BluetoothDeviceConnectInitial());
-  final List<BluetoothDeviceInfo> connectedDevices = [];
+  BluetoothDeviceConnectCubit() : super(const BluetoothDeviceConnectInitial());
 
   Future<void> connect(BluetoothDeviceInfo deviceInfo) async {
     emit(BluetoothDeviceConnecting(device: deviceInfo));
@@ -23,7 +22,7 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
         timeout: const Duration(seconds: 30),
         autoConnect: true,
       );
-      if ((await FlutterBluePlus.connectedDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
+      if ((await FlutterBluePlus.connectedSystemDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
         emit(BluetoothDeviceConnected(device: deviceInfo));
       } else {
         emit(BluetoothDeviceConnectError(device: deviceInfo));
@@ -40,11 +39,11 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
   Future<void> disconnect(BluetoothDeviceInfo deviceInfo) async {
     emit(BluetoothDeviceDisconnecting(device: deviceInfo));
     if (deviceInfo.scannedBleDevice != null) {
-      if (!(await FlutterBluePlus.connectedDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
+      if (!(await FlutterBluePlus.connectedSystemDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
         emit(BluetoothDeviceDisconnected(device: deviceInfo));
       }
       await deviceInfo.scannedBleDevice!.device.disconnect();
-      if (!(await FlutterBluePlus.connectedDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
+      if (!(await FlutterBluePlus.connectedSystemDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
         emit(BluetoothDeviceDisconnected(device: deviceInfo));
       } else {
         emit(BluetoothDeviceDisconnectError(device: deviceInfo));
