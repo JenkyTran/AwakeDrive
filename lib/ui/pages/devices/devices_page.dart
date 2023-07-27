@@ -75,7 +75,7 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
           BlocBuilder(
             bloc: BlocProvider.of<BluetoothDeviceScanCubit>(context),
             builder: (context, state) {
-              if (state is BluetoothDeviceScanning || state is BluetoothDeviceScanned) {
+              if (state is BluetoothDeviceScanning) {
                 return IconButton(
                   icon: AnimatedBuilder(
                     animation: _reloadIconAnimation,
@@ -112,15 +112,15 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                 return OtherItem(
                   icon: Icons.handyman_rounded,
                   label: 'Manual connect for non-listed devices',
-                  color: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? const Color(0xFF888888) : const Color(0xFF36A8FF),
-                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
+                  color: state is BluetoothDeviceScanning ? const Color(0xFF888888) : const Color(0xFF36A8FF),
+                  onClick: () => state is BluetoothDeviceScanning ? null : AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
                 );
               } else if (index == listFilter.length + 1) {
                 return OtherItem(
                   icon: Icons.device_unknown_rounded,
                   label: 'Other devices (${listOthers.length})',
-                  color: state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? const Color(0xFF888888) : const Color(0xFF36A8FF),
-                  onClick: () => state is BluetoothDeviceScanning || state is BluetoothDeviceScanned ? null : context.push(Routes.nested([Routes.devices, Routes.otherDevices]), extra: listOthers.toList()),
+                  color: state is BluetoothDeviceScanning ? const Color(0xFF888888) : const Color(0xFF36A8FF),
+                  onClick: () => state is BluetoothDeviceScanning ? null : context.push(Routes.nested([Routes.devices, Routes.otherDevices]), extra: listOthers.toList()),
                 );
               }
               final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {

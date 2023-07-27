@@ -53,6 +53,10 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
     }
   }
 
+  void preserve(BluetoothDeviceConnectState state) {
+    emit(state);
+  }
+
   void subscribeBleDeviceConnectionState(BluetoothDeviceInfo deviceInfo) {
     deviceInfo.scannedBleDevice!.device.connectionState.listen((event) {
       //todo

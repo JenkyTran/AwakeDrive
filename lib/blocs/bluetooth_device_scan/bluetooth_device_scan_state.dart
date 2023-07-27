@@ -5,12 +5,10 @@ abstract class BluetoothDeviceScanState {}
 
 class BluetoothDeviceScanInitial extends BluetoothDeviceScanState {}
 
-class BluetoothDeviceScanning extends BluetoothDeviceScanState {}
+class BluetoothDeviceScanning extends BluetoothDeviceScanState {
+  BluetoothDeviceScanning({this.device}) : super();
 
-class BluetoothDeviceScanned extends BluetoothDeviceScanState {
-  BluetoothDeviceScanned({required this.device}) : super();
-
-  final BluetoothDeviceInfo device;
+  final BluetoothDeviceInfo? device;
 }
 
 class BluetoothDeviceScanStopped extends BluetoothDeviceScanState {}

@@ -8,5 +8,6 @@ part 'bluetooth_devices_connect_state.dart';
 
 class BluetoothDevicesConnectCubit extends Cubit<BluetoothDevicesConnectState> {
   BluetoothDevicesConnectCubit() : super(BluetoothDevicesConnectInitial());
-  final Map<BluetoothDeviceConnectState, BluetoothDeviceInfo> devices = {};
+  final List<BluetoothDeviceInfo> devices = [];
+  final Map<String, BluetoothDeviceConnectState> mapStates = {};
 }

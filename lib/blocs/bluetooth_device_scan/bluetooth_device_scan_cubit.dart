@@ -10,7 +10,7 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
   final List<BluetoothDeviceInfo> scannedDevices = [];
 
   void subscribeBluetoothDevicesScan() {
-    Future.delayed(const Duration(seconds: 60), () {
+    Future.delayed(const Duration(seconds: 15), () {
       FlutterBluetoothSerial.instance.cancelDiscovery();
       emit(BluetoothDeviceScanStopped());
     });
@@ -25,7 +25,7 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
             scannedDevice: event,
           );
           scannedDevices.add(info);
-          emit(BluetoothDeviceScanned(device: info));
+          emit(BluetoothDeviceScanning(device: info));
         }
       },
       onError: (err, stackTrace) {
@@ -36,7 +36,7 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
       },
       cancelOnError: true,
     );
-    FlutterBluePlus.scan(timeout: const Duration(seconds: 60)).listen(
+    FlutterBluePlus.scan(timeout: const Duration(seconds: 15)).listen(
       (event) {
         if (!scannedDevices.map((e) => e.id).contains(event.device.remoteId.str)) {
           final info = BluetoothDeviceInfo(
@@ -48,7 +48,7 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
             scannedBleDevice: event,
           );
           scannedDevices.add(info);
-          emit(BluetoothDeviceScanned(device: info));
+          emit(BluetoothDeviceScanning(device: info));
         }
       },
       onError: (err, stackTrace) {
