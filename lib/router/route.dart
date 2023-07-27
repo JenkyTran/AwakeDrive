@@ -25,7 +25,11 @@ class Routes {
       if (v.startsWith('/')) {
         path = '$path$v';
       } else {
-        path = '$path/$v';
+        if (path.endsWith('/')) {
+          path = '$path$v';
+        } else {
+          path = '$path/$v';
+        }
       }
     }
     return path;

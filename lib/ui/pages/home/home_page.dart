@@ -7,13 +7,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          Icon(Icons.back_hand)
-        ],
+        actions: [Icon(Icons.back_hand)],
       ),
       body: Container(
         alignment: Alignment.center,
-        child: Text('Demo'),
+        child: Text(
+          'Demo',
+
+        ),
       ),
     );
   }
