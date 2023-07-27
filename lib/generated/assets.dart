@@ -2,9 +2,41 @@
 class Assets {
   Assets._();
 
+  static const String aboutAboutPage = 'lib/ui/pages/about/about_page.dart';
+  static const String beginBeginPage = 'lib/ui/pages/begin/begin_page.dart';
+  static const String bluetoothConnectionBluetoothConnectionCubit = 'lib/blocs/bluetooth_connection/bluetooth_connection_cubit.dart';
+  static const String bluetoothConnectionBluetoothConnectionState = 'lib/blocs/bluetooth_connection/bluetooth_connection_state.dart';
+  static const String bluetoothDeviceConnectBluetoothDeviceConnectCubit = 'lib/blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
+  static const String bluetoothDeviceConnectBluetoothDeviceConnectState = 'lib/blocs/bluetooth_device_connect/bluetooth_device_connect_state.dart';
+  static const String bluetoothDeviceScanBluetoothDeviceScanCubit = 'lib/blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
+  static const String bluetoothDeviceScanBluetoothDeviceScanState = 'lib/blocs/bluetooth_device_scan/bluetooth_device_scan_state.dart';
+  static const String bluetoothDevicesConnectBluetoothDevicesConnectCubit = 'lib/blocs/bluetooth_devices_connect/bluetooth_devices_connect_cubit.dart';
+  static const String bluetoothDevicesConnectBluetoothDevicesConnectState = 'lib/blocs/bluetooth_devices_connect/bluetooth_devices_connect_state.dart';
   static const String colorsColors = 'assets/colors/colors.xml';
+  static const String commonColors = 'lib/common/colors.dart';
+  static const String commonConstants = 'lib/common/constants.dart';
+  static const String commonDecorations = 'lib/common/decorations.dart';
+  static const String commonErrors = 'lib/common/errors.dart';
+  static const String commonFunctions = 'lib/common/functions.dart';
+  static const String commonTypedefs = 'lib/common/typedefs.dart';
+  static const String componentsBluetoothDeviceItem = 'lib/ui/pages/devices/components/bluetooth_device_item.dart';
+  static const String componentsIntroCard = 'lib/ui/pages/begin/components/intro_card.dart';
+  static const String componentsOtherDevicesItem = 'lib/ui/pages/devices/components/other_devices_item.dart';
+  static const String devicesDevicesPage = 'lib/ui/pages/devices/devices_page.dart';
+  static const String devicesOtherDevicesPage = 'lib/ui/pages/devices/other_devices_page.dart';
+  static const String generatedAssets = 'lib/generated/assets.dart';
+  static const String graphDataGraphDataCubit = 'lib/blocs/graph_data/graph_data_cubit.dart';
+  static const String graphDataGraphDataState = 'lib/blocs/graph_data/graph_data_state.dart';
+  static const String historyHistoryPage = 'lib/ui/pages/history/history_page.dart';
+  static const String homeHomePage = 'lib/ui/pages/home/home_page.dart';
+  static const String libMain = 'lib/main.dart';
+  static const String locatorLocator = 'lib/locator/locator.dart';
+  static const String musicPlayerMusicPlayerPage = 'lib/ui/pages/music_player/music_player_page.dart';
+  static const String permissionsPermissionHandler = 'lib/permissions/permission_handler.dart';
   static const String pngDemo = 'assets/images/png/demo.png';
   static const String pngLogo = 'assets/images/png/logo.png';
+  static const String routerRoute = 'lib/router/route.dart';
+  static const String servicesMindlinkDataAnalyzer = 'lib/services/mindlink_data_analyzer.dart';
   static const String svgArrowThin = 'assets/images/svg/arrow-thin.svg';
 
 }

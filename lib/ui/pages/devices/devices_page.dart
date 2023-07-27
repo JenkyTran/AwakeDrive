@@ -9,6 +9,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../../blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
 import '../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
 import '../../../blocs/bluetooth_devices_connect/bluetooth_devices_connect_cubit.dart';
+import '../../../common/constants.dart';
 import '../../../router/route.dart';
 import 'components/bluetooth_device_item.dart';
 import 'components/other_devices_item.dart';
@@ -44,14 +45,15 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
       floatingActionButton: BlocBuilder<BluetoothDevicesConnectCubit, BluetoothDevicesConnectState>(
         builder: (context, state) {
           if (BlocProvider
               .of<BluetoothDevicesConnectCubit>(context)
-              .devices
-              .isNotEmpty) {
+          // fixed mac address of mind-link, temporary, fix later, for demo purpose only
+              .devices.any((element) => element.address == Constants.mindLinkMacAddress)) {
             return FloatingActionButton(
               backgroundColor: const Color(0xFF5387EC),
               onPressed: () => GoRouter.of(context).push(Routes.main),

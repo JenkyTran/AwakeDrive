@@ -21,7 +21,7 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
             await deviceInfo.scannedBleDevice!.device.pair();
           }
         }
-      } catch(e) {
+      } catch (e) {
         // ignored
       }
       await deviceInfo.scannedBleDevice!.device.connect(
@@ -34,7 +34,8 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
         emit(BluetoothDeviceConnectError(device: deviceInfo));
       }
     } else {
-      if (await FlutterBluetoothSerial.instance.getBondStateForAddress(deviceInfo.address) == BluetoothBondState.bonded || (await FlutterBluetoothSerial.instance.bondDeviceAtAddress(deviceInfo.address) ?? false)) {
+      if (await FlutterBluetoothSerial.instance.getBondStateForAddress(deviceInfo.address) == BluetoothBondState.bonded ||
+          (await FlutterBluetoothSerial.instance.bondDeviceAtAddress(deviceInfo.address) ?? false)) {
         final BluetoothConnection connection = await BluetoothConnection.toAddress(deviceInfo.address, type: ConnectionType.CLASSIC);
         if (connection.isConnected) {
           emit(BluetoothDeviceConnected(device: deviceInfo, classicConnection: connection));

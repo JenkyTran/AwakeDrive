@@ -122,6 +122,7 @@ flutter:
   assets:
     - assets/images/svg/
     - assets/images/png/
+    - lib/services/
 #    - assets/lotties/
 #    - assets/rives/
 #    - assets/colors/

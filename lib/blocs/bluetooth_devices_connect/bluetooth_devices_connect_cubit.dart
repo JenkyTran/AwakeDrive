@@ -13,7 +13,7 @@ class BluetoothDevicesConnectCubit extends Cubit<BluetoothDevicesConnectState> {
   final List<BluetoothDeviceInfo> devices = [];
   final Map<String, BluetoothDeviceConnectState> mapStates = {};
   final Map<String, BluetoothConnection> classicConnections = {};
-  
+
   void add(BluetoothDeviceInfo device, BluetoothDeviceConnectState state, {BluetoothConnection? classicConnection}) {
     if (devices.filter((element) => element.id == state.device!.id).isEmpty) {
       devices.add(state.device!);
@@ -24,7 +24,7 @@ class BluetoothDevicesConnectCubit extends Cubit<BluetoothDevicesConnectState> {
     }
     emit(BluetoothDeviceAdded(device: device));
   }
-  
+
   void remove(BluetoothDeviceInfo device) {
     devices.removeWhere((element) => element.id == device.id);
     mapStates.removeWhere((key, value) => key == device.id);

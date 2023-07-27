@@ -3,13 +3,19 @@
 ///  FlutterGen
 /// *****************************************************
 
+import 'package:flutter/services.dart';
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter/services.dart';
+
+class $LibGen {
+  const $LibGen();
+
+  $LibServicesGen get services => const $LibServicesGen();
+}
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
@@ -18,14 +24,27 @@ class $AssetsImagesGen {
   $AssetsImagesSvgGen get svg => const $AssetsImagesSvgGen();
 }
 
+class $LibServicesGen {
+  const $LibServicesGen();
+
+  /// File path: lib/services/mindlink_data_analyzer.dart
+  String get mindlinkDataAnalyzer => 'lib/services/mindlink_data_analyzer.dart';
+
+  /// List of all assets
+  List<String> get values => [mindlinkDataAnalyzer];
+}
+
 class $AssetsImagesPngGen {
   const $AssetsImagesPngGen();
 
   /// File path: assets/images/png/demo.png
   AssetGenImage get demo => const AssetGenImage('assets/images/png/demo.png');
 
+  /// File path: assets/images/png/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/png/logo.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [demo];
+  List<AssetGenImage> get values => [demo, logo];
 }
 
 class $AssetsImagesSvgGen {
@@ -43,6 +62,7 @@ class Assets {
   Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $LibGen lib = $LibGen();
 }
 
 class AssetGenImage {
