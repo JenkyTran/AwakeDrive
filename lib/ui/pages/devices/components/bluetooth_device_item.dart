@@ -193,7 +193,7 @@ class BaseDeviceItem extends StatelessWidget {
                         onPressed: state is BluetoothDeviceScanning ? null : _controller.toggle,
                         padding: EdgeInsets.zero,
                         style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF6895ED) : const Color(0xFFE8E8E8)),
                         ),
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -205,7 +205,7 @@ class BaseDeviceItem extends StatelessWidget {
                       onPressed: _controller.toggle,
                       padding: EdgeInsets.zero,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF6895ED) : const Color(0xFFE8E8E8)),
                       ),
                       icon: Icon(
                         Icons.keyboard_arrow_down_rounded,
@@ -217,7 +217,10 @@ class BaseDeviceItem extends StatelessWidget {
         ),
         expanded: Row(
           children: [
-            const Icon(Icons.bluetooth).pOnly(right: 16),
+            Icon(
+              Icons.bluetooth,
+              color: connected ? Colors.white : null,
+            ).pOnly(right: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -274,7 +277,7 @@ class BaseDeviceItem extends StatelessWidget {
                         onPressed: state is BluetoothDeviceScanning ? null : _controller.toggle,
                         padding: EdgeInsets.zero,
                         style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF6895ED) : const Color(0xFFE8E8E8)),
                         ),
                         icon: Icon(
                           Icons.keyboard_arrow_up_rounded,
@@ -286,7 +289,7 @@ class BaseDeviceItem extends StatelessWidget {
                       onPressed: _controller.toggle,
                       padding: EdgeInsets.zero,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF6895ED) : const Color(0xFFE8E8E8)),
                       ),
                       icon: Icon(
                         Icons.keyboard_arrow_up_rounded,
