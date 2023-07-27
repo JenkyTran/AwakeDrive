@@ -20,7 +20,7 @@ class DevicesPage extends StatefulWidget {
   State<DevicesPage> createState() => _DevicesPageState();
 }
 
-class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin {
+class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _reloadIconAnimationController;
   late CurvedAnimation _reloadIconAnimation;
 
@@ -48,10 +48,17 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
       backgroundColor: context.theme.scaffoldBackgroundColor,
       floatingActionButton: BlocBuilder<BluetoothDevicesConnectCubit, BluetoothDevicesConnectState>(
         builder: (context, state) {
-          if (state is BluetoothDeviceConnected) {
+          if (BlocProvider
+              .of<BluetoothDevicesConnectCubit>(context)
+              .devices
+              .isNotEmpty) {
             return FloatingActionButton(
-              child: const Icon(Icons.arrow_forward_rounded),
-              onPressed: () {},
+              backgroundColor: const Color(0xFF5387EC),
+              onPressed: () => GoRouter.of(context).push(Routes.main),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+              ),
             );
           }
           return const SizedBox();
@@ -66,10 +73,19 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
           ).p8(),
           const Spacer(),
           BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
-            builder: (context, state) => Text(
-              'Available Devices (${BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull).length})',
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
-            ),
+            builder: (context, state) =>
+                Text(
+                  'Available Devices (${BlocProvider
+                      .of<BluetoothDeviceScanCubit>(context)
+                      .scannedDevices
+                      .filter((element) => element.name.isNotEmptyAndNotNull)
+                      .length})',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(fontSize: 18),
+                ),
           ),
           const Spacer(),
           BlocBuilder(
@@ -87,12 +103,16 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
                     },
                     child: const Icon(Icons.refresh),
                   ),
-                  onPressed: BlocProvider.of<BluetoothDeviceScanCubit>(context).stopScan,
+                  onPressed: BlocProvider
+                      .of<BluetoothDeviceScanCubit>(context)
+                      .stopScan,
                 ).p8();
               }
               return IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: BlocProvider.of<BluetoothDeviceScanCubit>(context).startScan,
+                onPressed: BlocProvider
+                    .of<BluetoothDeviceScanCubit>(context)
+                    .startScan,
               ).p8();
             },
           ),
@@ -100,47 +120,49 @@ class _DevicesPageState extends State<DevicesPage> with TickerProviderStateMixin
       ),
       body: BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(
         builder: (context, state) {
-          final Iterable<BluetoothDeviceInfo> listFilter =
-              BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isNotEmptyAndNotNull);
-          final Iterable<BluetoothDeviceInfo> listOthers =
-              BlocProvider.of<BluetoothDeviceScanCubit>(context).scannedDevices.filter((element) => element.name.isEmptyOrNull);
-          return ListView.builder(
-            itemCount: listFilter.length + 2,
-            padding: const EdgeInsets.all(8),
-            itemBuilder: (context, index) {
-              if (index == listFilter.length) {
-                return OtherItem(
+          final List<BluetoothDeviceInfo> listFilter =
+          BlocProvider
+              .of<BluetoothDeviceScanCubit>(context)
+              .scannedDevices
+              .filter((element) => element.name.isNotEmptyAndNotNull)
+              .toList();
+          final List<BluetoothDeviceInfo> listOthers =
+          BlocProvider
+              .of<BluetoothDeviceScanCubit>(context)
+              .scannedDevices
+              .filter((element) => element.name.isEmptyOrNull)
+              .toList();
+          return SingleChildScrollView(
+            // use column instead of listview to keep state of item
+            child: Column(
+              children: [
+                for (final device in listFilter) BlocProvider(
+                  create: (BuildContext context) => BluetoothDeviceConnectCubit(),
+                  child: BluetoothDeviceItem(
+                    info: device,
+                  ).pSymmetric(v: 2),
+                ),
+                OtherItem(
+                  icon: Icons.device_unknown_rounded,
+                  label: 'Other devices (${listOthers.length})',
+                  color: state is BluetoothDeviceScanning ? const Color(0xFF888888) : const Color(0xFF36A8FF),
+                  onClick: () =>
+                  state is BluetoothDeviceScanning ? null : context.push(Routes.nested([Routes.devices, Routes.otherDevices]), extra: listOthers.toList()),
+                ),
+                OtherItem(
                   icon: Icons.handyman_rounded,
                   label: 'Manual connect for non-listed devices',
                   color: state is BluetoothDeviceScanning ? const Color(0xFF888888) : const Color(0xFF36A8FF),
                   onClick: () => state is BluetoothDeviceScanning ? null : AppSettings.openAppSettings(type: AppSettingsType.bluetooth),
-                );
-              } else if (index == listFilter.length + 1) {
-                return OtherItem(
-                  icon: Icons.device_unknown_rounded,
-                  label: 'Other devices (${listOthers.length})',
-                  color: state is BluetoothDeviceScanning ? const Color(0xFF888888) : const Color(0xFF36A8FF),
-                  onClick: () => state is BluetoothDeviceScanning ? null : context.push(Routes.nested([Routes.devices, Routes.otherDevices]), extra: listOthers.toList()),
-                );
-              }
-              final BluetoothDeviceInfo device = listFilter.sortedBy((a, b) {
-                final int nameCompareResult = (a.name ?? 'z').compareTo(b.name ?? 'z');
-                if (nameCompareResult != 0) {
-                  return nameCompareResult;
-                } else {
-                  return a.id.compareTo(b.id);
-                }
-              })[index];
-              return BlocProvider(
-                create: (BuildContext context) => BluetoothDeviceConnectCubit(),
-                child: BluetoothDeviceItem(
-                  info: device,
-                ).pSymmetric(v: 2),
-              );
-            },
+                ),
+              ],
+            ).p8(),
           );
         },
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

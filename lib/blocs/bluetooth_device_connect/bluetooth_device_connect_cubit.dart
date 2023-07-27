@@ -15,8 +15,14 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
   Future<void> connect(BluetoothDeviceInfo deviceInfo) async {
     emit(BluetoothDeviceConnecting(device: deviceInfo));
     if (deviceInfo.scannedBleDevice != null) {
-      if (Platform.isAndroid) {
-        await deviceInfo.scannedBleDevice!.device.pair();
+      try {
+        if (Platform.isAndroid) {
+          if (!(await FlutterBluePlus.bondedDevices).any((element) => element.remoteId.str == deviceInfo.id)) {
+            await deviceInfo.scannedBleDevice!.device.pair();
+          }
+        }
+      } catch(e) {
+        // ignored
       }
       await deviceInfo.scannedBleDevice!.device.connect(
         timeout: const Duration(seconds: 30),
@@ -28,15 +34,22 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
         emit(BluetoothDeviceConnectError(device: deviceInfo));
       }
     } else {
-      if (await FlutterBluetoothSerial.instance.bondDeviceAtAddress(deviceInfo.address) ?? false) {
-        // todo
+      if (await FlutterBluetoothSerial.instance.getBondStateForAddress(deviceInfo.address) == BluetoothBondState.bonded || (await FlutterBluetoothSerial.instance.bondDeviceAtAddress(deviceInfo.address) ?? false)) {
+        final BluetoothConnection connection = await BluetoothConnection.toAddress(deviceInfo.address, type: ConnectionType.CLASSIC);
+        if (connection.isConnected) {
+          emit(BluetoothDeviceConnected(device: deviceInfo, classicConnection: connection));
+          // debug
+          // FlutterBluetoothSerial.instance.removeDeviceBondWithAddress(deviceInfo.address);
+        } else {
+          emit(BluetoothDeviceConnectError(device: deviceInfo));
+        }
       } else {
         emit(BluetoothDeviceConnectError(device: deviceInfo));
       }
     }
   }
 
-  Future<void> disconnect(BluetoothDeviceInfo deviceInfo) async {
+  Future<void> disconnect(BluetoothDeviceInfo deviceInfo, {BluetoothConnection? classicConnection, bool classicImmediately = false}) async {
     emit(BluetoothDeviceDisconnecting(device: deviceInfo));
     if (deviceInfo.scannedBleDevice != null) {
       if (!(await FlutterBluePlus.connectedSystemDevices).map((e) => e.remoteId).contains(deviceInfo.scannedBleDevice!.device.remoteId)) {
@@ -49,17 +62,21 @@ class BluetoothDeviceConnectCubit extends Cubit<BluetoothDeviceConnectState> {
         emit(BluetoothDeviceDisconnectError(device: deviceInfo));
       }
     } else {
-
+      if (classicConnection == null) {
+        emit(BluetoothDeviceConnectError(device: deviceInfo));
+      } else if (classicConnection.isConnected) {
+        if (classicImmediately) {
+          classicConnection.close().whenComplete(() => emit(BluetoothDeviceDisconnected(device: deviceInfo)));
+        } else {
+          classicConnection.finish().whenComplete(() => emit(BluetoothDeviceDisconnected(device: deviceInfo)));
+        }
+      } else {
+        emit(BluetoothDeviceDisconnected(device: deviceInfo));
+      }
     }
   }
 
   void preserve(BluetoothDeviceConnectState state) {
     emit(state);
-  }
-
-  void subscribeBleDeviceConnectionState(BluetoothDeviceInfo deviceInfo) {
-    deviceInfo.scannedBleDevice!.device.connectionState.listen((event) {
-      //todo
-    });
   }
 }

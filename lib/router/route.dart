@@ -37,7 +37,7 @@ class Routes {
 }
 
 final _router = GoRouter(
-  initialLocation: Routes.main,
+  initialLocation: Routes.begin,
   routes: [
     GoRoute(path: Routes.begin, builder: (_, __) => const BeginPage()),
     GoRoute(
@@ -54,7 +54,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: Routes.main,
-      redirect: (_, __) => Routes.begin,
+      redirect: (_, __) => Routes.nested([Routes.main, Routes.home]),
       routes: [
         GoRoute(path: Routes.home, builder: (_, __) => const HomePage()),
         GoRoute(path: Routes.musicPlayer, builder: (_, __) => const MusicPlayerPage()),

@@ -34,13 +34,13 @@ class BluetoothDeviceItem extends StatelessWidget {
           break;
         case BluetoothDeviceDisconnected:
           Fluttertoast.showToast(msg: '${info.name.isNotEmptyAndNotNull ? info.name : info.id} disconnected');
+          BlocProvider.of<BluetoothDevicesConnectCubit>(context).remove(info);
           break;
         case BluetoothDeviceConnecting:
           break;
         case BluetoothDeviceConnected:
           Fluttertoast.showToast(msg: '${info.name.isNotEmptyAndNotNull ? info.name : info.id} connected');
-          BlocProvider.of<BluetoothDevicesConnectCubit>(context).devices.add(state.device!);
-          BlocProvider.of<BluetoothDevicesConnectCubit>(context).mapStates[state.device!.id] = state;
+          BlocProvider.of<BluetoothDevicesConnectCubit>(context).add(info, state, classicConnection: (state as BluetoothDeviceConnected).classicConnection);
           break;
         case BluetoothDeviceDisconnecting:
           break;
@@ -62,6 +62,7 @@ class BluetoothDeviceItem extends StatelessWidget {
           state: state,
         );
       } else {
+        final classicConnection = BlocProvider.of<BluetoothDevicesConnectCubit>(context).classicConnections[info.id];
         switch (state.runtimeType) {
           case BluetoothDeviceConnecting:
             child = Shimmer.fromColors(
@@ -77,25 +78,25 @@ class BluetoothDeviceItem extends StatelessWidget {
             );
             break;
           case BluetoothDeviceDisconnecting:
-          child = Shimmer.fromColors(
-            baseColor: const Color(0xFFFF3333),
-            highlightColor: const Color(0xFFFF9933),
-            child: BaseDeviceItem(
-              info: info,
-              controller: _controller,
-              reactive: reactive,
-              onTap: () => {},
-              state: state,
-            ),
-          );
-          break;
+            child = Shimmer.fromColors(
+              baseColor: const Color(0xFFFF3333),
+              highlightColor: const Color(0xFFFF9933),
+              child: BaseDeviceItem(
+                info: info,
+                controller: _controller,
+                reactive: reactive,
+                onTap: () => {},
+                state: state,
+              ),
+            );
+            break;
           case BluetoothDeviceDisconnectError:
           case BluetoothDeviceConnected:
             child = BaseDeviceItem(
               info: info,
               controller: _controller,
               reactive: reactive,
-              onTap: () => BlocProvider.of<BluetoothDeviceConnectCubit>(context).disconnect(info),
+              onTap: () => BlocProvider.of<BluetoothDeviceConnectCubit>(context).disconnect(info, classicConnection: classicConnection),
               state: state,
             );
             break;
@@ -143,6 +144,7 @@ class BaseDeviceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final connected = BlocProvider.of<BluetoothDeviceConnectCubit>(context).state is BluetoothDeviceConnected;
     return InkWell(
       onTap: () {
         if (BlocProvider.of<BluetoothDeviceScanCubit>(context).state is BluetoothDeviceScanning) {
@@ -156,83 +158,27 @@ class BaseDeviceItem extends StatelessWidget {
         controller: _controller,
         collapsed: Row(
           children: [
-            const Icon(Icons.bluetooth).pOnly(right: 16),
+            Icon(
+              Icons.bluetooth,
+              color: connected ? Colors.white : null,
+            ).pOnly(right: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   info.name.isEmptyOrNull ? 'Unnamed Device' : info.name!,
                   overflow: TextOverflow.fade,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 16,
+                    color: connected ? Colors.white : null,
+                  ),
                 ),
                 Text(
                   info.id,
                   overflow: TextOverflow.fade,
                   style: context.theme.textTheme.bodyMedium!.copyWith(
                     fontSize: 12,
-                    color: const Color(0xFF999999),
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: IconButton(
-                onPressed: state is BluetoothDeviceScanning ? null : _controller.toggle,
-                padding: EdgeInsets.zero,
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
-                ),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF888888),
-                ),
-              ),
-            ),
-          ],
-        ),
-        expanded: Row(
-          children: [
-            const Icon(Icons.bluetooth).pOnly(right: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  info.name.isEmptyOrNull ? 'Unnamed Device' : info.name!,
-                  overflow: TextOverflow.fade,
-                ),
-                Text(
-                  'ID: ${info.id}',
-                  overflow: TextOverflow.fade,
-                  style: context.theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xFF999999),
-                  ),
-                ),
-                Text(
-                  'ADDRESS: ${info.address}',
-                  overflow: TextOverflow.fade,
-                  style: context.theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xFF999999),
-                  ),
-                ),
-                for (final uid in info.uuids ?? [])
-                  Text(
-                    'UUID${info.uuids?.indexOf(uid)}: $uid',
-                    overflow: TextOverflow.fade,
-                    style: context.theme.textTheme.bodyMedium!.copyWith(
-                      fontSize: 12,
-                      color: const Color(0xFF999999),
-                    ),
-                  ),
-                Text(
-                  'RSSI: ${info.rssi}',
-                  overflow: TextOverflow.fade,
-                  style: context.theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xFF999999),
+                    color: connected ? Colors.white : const Color(0xFF999999),
                   ),
                 ),
               ],
@@ -246,24 +192,105 @@ class BaseDeviceItem extends StatelessWidget {
                       return IconButton(
                         onPressed: state is BluetoothDeviceScanning ? null : _controller.toggle,
                         padding: EdgeInsets.zero,
-                        style: const ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
                         ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: Color(0xFF888888),
+                          color: connected ? Colors.white : const Color(0xFF888888),
                         ),
                       );
                     })
                   : IconButton(
                       onPressed: _controller.toggle,
                       padding: EdgeInsets.zero,
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Color(0xFFE8E8E8)),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
                       ),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        color: Color(0xFF888888),
+                        color: connected ? Colors.white : const Color(0xFF888888),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+        expanded: Row(
+          children: [
+            const Icon(Icons.bluetooth).pOnly(right: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  info.name.isEmptyOrNull ? 'Unnamed Device' : info.name!,
+                  overflow: TextOverflow.fade,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 16,
+                    color: connected ? Colors.white : null,
+                  ),
+                ),
+                Text(
+                  'ID: ${info.id}',
+                  overflow: TextOverflow.fade,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: connected ? Colors.white : const Color(0xFF999999),
+                  ),
+                ),
+                Text(
+                  'ADDRESS: ${info.address}',
+                  overflow: TextOverflow.fade,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: connected ? Colors.white : const Color(0xFF999999),
+                  ),
+                ),
+                for (final uid in info.uuids ?? [])
+                  Text(
+                    'UUID${info.uuids?.indexOf(uid)}: $uid',
+                    overflow: TextOverflow.fade,
+                    style: context.theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: connected ? Colors.white : const Color(0xFF999999),
+                    ),
+                  ),
+                Text(
+                  'RSSI: ${info.rssi}',
+                  overflow: TextOverflow.fade,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: connected ? Colors.white : const Color(0xFF999999),
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: reactive
+                  ? BlocBuilder<BluetoothDeviceScanCubit, BluetoothDeviceScanState>(builder: (context, state) {
+                      return IconButton(
+                        onPressed: state is BluetoothDeviceScanning ? null : _controller.toggle,
+                        padding: EdgeInsets.zero,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                        ),
+                        icon: Icon(
+                          Icons.keyboard_arrow_up_rounded,
+                          color: connected ? Colors.white : const Color(0xFF888888),
+                        ),
+                      );
+                    })
+                  : IconButton(
+                      onPressed: _controller.toggle,
+                      padding: EdgeInsets.zero,
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(connected ? const Color(0xFF5387EC) : const Color(0xFFE8E8E8)),
+                      ),
+                      icon: Icon(
+                        Icons.keyboard_arrow_up_rounded,
+                        color: connected ? Colors.white : const Color(0xFF888888),
                       ),
                     ),
             ),

@@ -47,8 +47,10 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
             address: event.device.remoteId.str,
             scannedBleDevice: event,
           );
-          scannedDevices.add(info);
-          emit(BluetoothDeviceScanning(device: info));
+          if (!scannedDevices.any((element) => element.id == info.id)) {
+            scannedDevices.add(info);
+            emit(BluetoothDeviceScanning(device: info));
+          }
         }
       },
       onError: (err, stackTrace) {
@@ -65,7 +67,6 @@ class BluetoothDeviceScanCubit extends Cubit<BluetoothDeviceScanState> {
     if (state is BluetoothDeviceScanning) {
       return;
     }
-    scannedDevices.removeWhere((element) => true);
     subscribeBluetoothDevicesScan();
     emit(BluetoothDeviceScanning());
   }

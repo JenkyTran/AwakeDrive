@@ -15,7 +15,8 @@ class BluetoothDeviceConnecting extends BluetoothDeviceConnectState {
 }
 
 class BluetoothDeviceConnected extends BluetoothDeviceConnectState {
-  const BluetoothDeviceConnected({required BluetoothDeviceInfo device}) : super(device: device);
+  const BluetoothDeviceConnected({required BluetoothDeviceInfo device, this.classicConnection}) : super(device: device);
+  final BluetoothConnection? classicConnection;
 }
 
 class BluetoothDeviceDisconnecting extends BluetoothDeviceConnectState {

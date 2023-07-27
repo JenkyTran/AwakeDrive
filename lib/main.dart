@@ -40,8 +40,8 @@ class Application extends StatelessWidget {
           return MaterialApp.router(
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
-            theme: FlexThemeData.light(scheme: FlexScheme.purpleM3, useMaterial3: true),
-            darkTheme: FlexThemeData.light(scheme: FlexScheme.purpleM3, useMaterial3: true),
+            theme: FlexThemeData.light(scheme: FlexScheme.blueM3, useMaterial3: true),
+            darkTheme: FlexThemeData.light(scheme: FlexScheme.blueM3, useMaterial3: true),
             routerConfig: router,
           );
         },

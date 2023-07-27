@@ -5,6 +5,8 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../blocs/bluetooth_device_connect/bluetooth_device_connect_cubit.dart';
 import '../../../blocs/bluetooth_device_scan/bluetooth_device_scan_cubit.dart';
+import '../../../blocs/bluetooth_devices_connect/bluetooth_devices_connect_cubit.dart';
+import '../../../router/route.dart';
 import 'components/bluetooth_device_item.dart';
 
 class OtherDevicesPage extends StatelessWidget {
@@ -15,12 +17,16 @@ class OtherDevicesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.scaffoldBackgroundColor,
-      floatingActionButton: BlocBuilder<BluetoothDeviceConnectCubit, BluetoothDeviceConnectState>(
+      floatingActionButton: BlocBuilder<BluetoothDevicesConnectCubit, BluetoothDevicesConnectState>(
         builder: (context, state) {
-          if (state is BluetoothDeviceConnected) {
+          if (BlocProvider.of<BluetoothDevicesConnectCubit>(context).devices.isNotEmpty) {
             return FloatingActionButton(
-              child: const Icon(Icons.arrow_forward_rounded),
-              onPressed: () {},
+              backgroundColor: const Color(0xFF5387EC),
+              onPressed: () => GoRouter.of(context).push(Routes.main),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+              ),
             );
           }
           return const SizedBox();
@@ -59,9 +65,12 @@ class OtherDevicesPage extends StatelessWidget {
               return a.id.compareTo(b.id);
             }
           })[index];
-          return BluetoothDeviceItem(
-            info: device,
-            reactive: false,
+          return BlocProvider(
+            create: (context) => BluetoothDeviceConnectCubit(),
+            child: BluetoothDeviceItem(
+              info: device,
+              reactive: false,
+            ),
           ).pSymmetric(v: 2);
         },
       ),
