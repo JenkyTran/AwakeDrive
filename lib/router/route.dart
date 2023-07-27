@@ -21,7 +21,7 @@ class Routes {
 }
 
 final _router = GoRouter(
-  initialLocation: Routes.begin,
+  initialLocation: '$Routes.main',
   routes: [
     GoRoute(path: Routes.begin, builder: (_, __) => const BeginPage()),
     GoRoute(

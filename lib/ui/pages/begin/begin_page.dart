@@ -69,9 +69,12 @@ class BeginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () => handleStartClicked(context),
               style: ButtonStyle(
-                  backgroundColor: const MaterialStatePropertyAll(Color(0xFFFC5185)),
-                  overlayColor: MaterialStatePropertyAll(Colors.white.withOpacity(0.1)),
-                  foregroundColor: MaterialStatePropertyAll(Colors.white.withOpacity(0.1))),
+                  backgroundColor:
+                      const MaterialStatePropertyAll(Color(0xFFFC5185)),
+                  overlayColor:
+                      MaterialStatePropertyAll(Colors.white.withOpacity(0.1)),
+                  foregroundColor:
+                      MaterialStatePropertyAll(Colors.white.withOpacity(0.1))),
               child: Row(
                 children: [
                   const Spacer(flex: 2),
@@ -95,51 +98,51 @@ class BeginPage extends StatelessWidget {
   }
 
   Future<void> handleStartClicked(BuildContext context) async {
-    if (!Platform.isAndroid) {
-      Fluttertoast.showToast(
-        msg: 'Device not support, only Android',
-      );
-      await exitApp(const Duration(milliseconds: 1000));
-    }
-    if (!await PermissionHandler.requestPermission()) {
-      Fluttertoast.showToast(
-        msg: 'You must allow bluetooth and location permissions for the app to work properly. Please allow them in setting',
-      );
-      if (!await openAppSettings()) {
-        Fluttertoast.showToast(
-          msg: 'Can not open setting, exit after 1s',
-        );
-        await exitApp(const Duration(milliseconds: 1000));
-      } else {
-        return;
-      }
-    }
-    if (!await FlutterBluePlus.isAvailable) {
-      Fluttertoast.showToast(
-        msg: 'Bluetooth not support, exit after 1s',
-      );
-      await exitApp(const Duration(milliseconds: 1000));
-    }
-    if (!await FlutterBluePlus.isOn) {
-      Fluttertoast.showToast(
-        msg: 'Bluetooth not enable, trying to turn on bluetooth',
-      );
-      await GetIt.I<BluetoothManager>().enableBluetooth().then((ActionResponse result) {
-        if (result == ActionResponse.bluetoothAlreadyOn || result == ActionResponse.bluetoothIsOn) {
-          Fluttertoast.showToast(
-            msg: 'Bluetooth enabled',
-          );
-          if (context.mounted) {
-            GoRouter.of(context).push(Routes.devices);
-          }
-        } else {
-          Fluttertoast.showToast(
-            msg: 'Can not auto turn on bluetooth, please enable it in setting',
-          );
-          AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
-        }
-      });
-    }
+    // if (!Platform.isAndroid) {
+    //   Fluttertoast.showToast(
+    //     msg: 'Device not support, only Android',
+    //   );
+    //   await exitApp(const Duration(milliseconds: 1000));
+    // }
+    // if (!await PermissionHandler.requestPermission()) {
+    //   Fluttertoast.showToast(
+    //     msg: 'You must allow bluetooth and location permissions for the app to work properly. Please allow them in setting',
+    //   );
+    //   if (!await openAppSettings()) {
+    //     Fluttertoast.showToast(
+    //       msg: 'Can not open setting, exit after 1s',
+    //     );
+    //     await exitApp(const Duration(milliseconds: 1000));
+    //   } else {
+    //     return;
+    //   }
+    // }
+    // if (!await FlutterBluePlus.isAvailable) {
+    //   Fluttertoast.showToast(
+    //     msg: 'Bluetooth not support, exit after 1s',
+    //   );
+    //   await exitApp(const Duration(milliseconds: 1000));
+    // }
+    // if (!await FlutterBluePlus.isOn) {
+    //   Fluttertoast.showToast(
+    //     msg: 'Bluetooth not enable, trying to turn on bluetooth',
+    //   );
+    //   await GetIt.I<BluetoothManager>().enableBluetooth().then((ActionResponse result) {
+    //     if (result == ActionResponse.bluetoothAlreadyOn || result == ActionResponse.bluetoothIsOn) {
+    //       Fluttertoast.showToast(
+    //         msg: 'Bluetooth enabled',
+    //       );
+    //       if (context.mounted) {
+    //         GoRouter.of(context).push(Routes.devices);
+    //       }
+    //     } else {
+    //       Fluttertoast.showToast(
+    //         msg: 'Can not auto turn on bluetooth, please enable it in setting',
+    //       );
+    //       AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
+    //     }
+    //   });
+    // }
     if (await FlutterBluePlus.isOn) {
       if (context.mounted) {
         GoRouter.of(context).push(Routes.devices);
