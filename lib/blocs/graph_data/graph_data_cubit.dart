@@ -32,7 +32,6 @@ class GraphDataCubit extends Cubit<GraphDataState> {
     _dataStreamController.stream.listen(
       (event) {
         emit(GraphDataAdded(data: event));
-        _dataStreamController.add(event);
       },
       onDone: () {
         // ignore
