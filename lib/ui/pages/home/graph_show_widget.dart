@@ -1,14 +1,12 @@
 import 'dart:async';
 
-
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 import '../../../services/mindlink_data_analyzer.dart';
 
 class MindLinkDataGraph extends StatefulWidget {
-  const MindLinkDataGraph({Key? key, required this.mindLinkDataStream})
-      : super(key: key);
+  const MindLinkDataGraph({Key? key, required this.mindLinkDataStream}) : super(key: key);
   final Stream<MindLinkData>? mindLinkDataStream;
 
   @override
@@ -22,9 +20,6 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
   @override
   void initState() {
     super.initState();
-    if (widget.mindLinkDataStream == null) {
-      print('Mindlink data received error');
-    }
     widget.mindLinkDataStream?.listen((data) {
       setState(() {
         // Check and remove the first elements if lists reach 500 values
@@ -46,8 +41,8 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
     return Scaffold(
       body: LineChart(
         LineChartData(
-          gridData: FlGridData(show: false),
-          titlesData: FlTitlesData(show: false),
+          gridData: const FlGridData(show: false),
+          titlesData: const FlTitlesData(show: false),
           borderData: FlBorderData(show: false),
           minX: 0,
           maxX: 500,
@@ -59,18 +54,18 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
                 return FlSpot(entry.key.toDouble(), entry.value);
               }).toList(),
               isCurved: true,
-              color: Color.fromRGBO(238, 30, 30, 50), // Red color for attention line
-              belowBarData: BarAreaData(show: false),
-              dotData: FlDotData(show: false),
+              color: const Color.fromRGBO(238, 30, 30, 50), // Red color for attention line
+              belowBarData: BarAreaData(),
+              dotData: const FlDotData(show: false),
             ),
             LineChartBarData(
               spots: meditationData.asMap().entries.map((entry) {
                 return FlSpot(entry.key.toDouble(), entry.value);
               }).toList(),
               isCurved: true,
-              color: Color.fromRGBO(0, 128, 255, 50) , // Blue color for meditation line
-              belowBarData: BarAreaData(show: false),
-              dotData: FlDotData(show: false),
+              color: const Color.fromRGBO(0, 128, 255, 50), // Blue color for meditation line
+              belowBarData: BarAreaData(),
+              dotData: const FlDotData(show: false),
             ),
           ],
         ),

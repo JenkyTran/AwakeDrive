@@ -25,9 +25,12 @@ class Assets {
   static const String devicesDevicesPage = 'lib/ui/pages/devices/devices_page.dart';
   static const String devicesOtherDevicesPage = 'lib/ui/pages/devices/other_devices_page.dart';
   static const String generatedAssets = 'lib/generated/assets.dart';
+  static const String generatedAssets.gen = 'lib/generated/assets.gen.dart';
+  static const String generatedColors.gen = 'lib/generated/colors.gen.dart';
   static const String graphDataGraphDataCubit = 'lib/blocs/graph_data/graph_data_cubit.dart';
   static const String graphDataGraphDataState = 'lib/blocs/graph_data/graph_data_state.dart';
   static const String historyHistoryPage = 'lib/ui/pages/history/history_page.dart';
+  static const String homeGraphShowWidget = 'lib/ui/pages/home/graph_show_widget.dart';
   static const String homeHomePage = 'lib/ui/pages/home/home_page.dart';
   static const String libMain = 'lib/main.dart';
   static const String locatorLocator = 'lib/locator/locator.dart';
