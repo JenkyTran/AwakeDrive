@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../../blocs/bluetooth_devices_connect/bluetooth_devices_connect_cubit.dart';
 import '../../../blocs/graph_data/graph_data_cubit.dart';
-import '../../../common/constants.dart';
-import 'graph_show_widget.dart';
+import 'components/graph_show_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,54 +14,73 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final List<MindLinkData> data = [];
+  @override
+  void initState() {
+    BlocProvider.of<GraphDataCubit>(context).mockData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GraphDataCubit>(
-      create: (context) => GraphDataCubit(),
-      child: Builder(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                onPressed: () {
-                  final mindLink = BlocProvider.of<BluetoothDevicesConnectCubit>(context).devices.firstWhere((e) => e.id == Constants.mindLinkMacAddress);
-                  final mindLinkConnection = BlocProvider.of<BluetoothDevicesConnectCubit>(context).classicConnections[Constants.mindLinkMacAddress];
-                  if (mindLink == null || mindLinkConnection == null) {
-                    return;
-                  }
-                  BlocProvider.of<GraphDataCubit>(context).subscribeData(mindLink, classicConnection: mindLinkConnection);
-                },
-                icon: const Icon(Icons.data_exploration),
-              ).p8(),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => GoRouter.of(context).pop(),
+          ).p8(),
+          const Spacer(),
+          Text(
+            'Attention And Meditation',
+            style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 18),
           ),
-          body: Container(
-            alignment: Alignment.center,
-            // child: BlocBuilder<GraphDataCubit, GraphDataState>(
-            //   builder: (context, state) {
-            //     if (state is GraphDataAdded) {
-            //       if (data.length > 1000) {
-            //         data.removeWhere((element) => true);
-            //       }
-            //       data.add(state.data);
-            //       return SingleChildScrollView(
-            //         child: Wrap(
-            //           children: [
-            //             for (final d in data) Text('m: ${d.meditation} a: ${d.attention}').p8()
-            //           ],
-            //         ),
-            //       );
-            //     }
-            //     return const SizedBox();
-            //   },
-            // )
-            child: MindLinkDataGraph(
-              mindLinkDataStream: BlocProvider.of<GraphDataCubit>(context).dataStream,
+          const Spacer(),
+          const IconButton(
+            icon: SizedBox(),
+            onPressed: null,
+          ).p8(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
+        selectedLabelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+        unselectedLabelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
             ),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.music_note,
+              color: Colors.black,
+            ),
+            label: 'Music Player',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.history,
+              color: Colors.black,
+            ),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: 'About Us',
+          ),
+        ],
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: const MindLinkDataGraph(),
       ),
     );
   }

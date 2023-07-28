@@ -20,6 +20,7 @@ class Assets {
   static const String commonFunctions = 'lib/common/functions.dart';
   static const String commonTypedefs = 'lib/common/typedefs.dart';
   static const String componentsBluetoothDeviceItem = 'lib/ui/pages/devices/components/bluetooth_device_item.dart';
+  static const String componentsGraphShowWidget = 'lib/ui/pages/home/components/graph_show_widget.dart';
   static const String componentsIntroCard = 'lib/ui/pages/begin/components/intro_card.dart';
   static const String componentsOtherDevicesItem = 'lib/ui/pages/devices/components/other_devices_item.dart';
   static const String devicesDevicesPage = 'lib/ui/pages/devices/devices_page.dart';
@@ -30,7 +31,6 @@ class Assets {
   static const String graphDataGraphDataCubit = 'lib/blocs/graph_data/graph_data_cubit.dart';
   static const String graphDataGraphDataState = 'lib/blocs/graph_data/graph_data_state.dart';
   static const String historyHistoryPage = 'lib/ui/pages/history/history_page.dart';
-  static const String homeGraphShowWidget = 'lib/ui/pages/home/graph_show_widget.dart';
   static const String homeHomePage = 'lib/ui/pages/home/home_page.dart';
   static const String libMain = 'lib/main.dart';
   static const String locatorLocator = 'lib/locator/locator.dart';

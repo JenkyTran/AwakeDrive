@@ -21,7 +21,7 @@ class Routes {
 
   static String nested(List<String> args) {
     String path = '';
-    for(final String v in args) {
+    for (final String v in args) {
       if (v.startsWith('/')) {
         path = '$path$v';
       } else {
@@ -37,19 +37,21 @@ class Routes {
 }
 
 final _router = GoRouter(
-  initialLocation: Routes.begin,
+  initialLocation: Routes.main,
   routes: [
     GoRoute(path: Routes.begin, builder: (_, __) => const BeginPage()),
     GoRoute(
       path: Routes.devices,
       builder: (_, __) => const DevicesPage(),
       routes: [
-        GoRoute(path: Routes.otherDevices, builder: (_, state) {
-          final List<BluetoothDeviceInfo> data = state.extra as List<BluetoothDeviceInfo>? ?? [];
-          return OtherDevicesPage(
-            data: data,
-          );
-        }),
+        GoRoute(
+            path: Routes.otherDevices,
+            builder: (_, state) {
+              final List<BluetoothDeviceInfo> data = state.extra as List<BluetoothDeviceInfo>? ?? [];
+              return OtherDevicesPage(
+                data: data,
+              );
+            }),
       ],
     ),
     GoRoute(
