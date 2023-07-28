@@ -1,22 +1,20 @@
 import 'dart:async';
-import 'dart:ui';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../services/mindlink_data_analyzer.dart';
 
 class MindLinkDataGraph extends StatefulWidget {
+  const MindLinkDataGraph({Key? key, required this.mindLinkDataStream}) : super(key: key);
   final Stream<MindLinkData> mindLinkDataStream;
-
-  const MindLinkDataGraph({Key? key, required this.mindLinkDataStream})
-      : super(key: key);
 
   @override
   State<MindLinkDataGraph> createState() => _MindLinkDataGraphState();
 }
 
 class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
+  // Doan nay ma de cai list nhu the nay no cu them du lieu vao mai se bij tran bo nho do list qua lon
   List<double> attentionData = [];
   List<double> meditationData = [];
 
@@ -45,11 +43,9 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
 }
 
 class MindLinkDataChartPainter extends CustomPainter {
+  MindLinkDataChartPainter({required this.attentionData, required this.meditationData});
   final List<double> attentionData;
   final List<double> meditationData;
-
-  MindLinkDataChartPainter(
-      {required this.attentionData, required this.meditationData});
 
   @override
   void paint(Canvas canvas, Size size) {

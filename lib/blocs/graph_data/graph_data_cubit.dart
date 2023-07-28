@@ -9,6 +9,7 @@ class GraphDataCubit extends Cubit<GraphDataState> {
   GraphDataCubit() : super(GraphDataInitial());
 
   bool _isListening = false;
+  late Stream<MindLinkData> dataStream;
 
   void subscribeData(BluetoothDeviceInfo device, {BluetoothConnection? classicConnection}) {
     if (!_isListening) {
@@ -16,10 +17,9 @@ class GraphDataCubit extends Cubit<GraphDataState> {
       final MindLinkDataAnalyzer analyzer = MindLinkDataAnalyzer();
       classicConnection?.input?.listen(
         (data) {
-          print(data);
-          analyzer.analyze(data).listen(
+          dataStream = analyzer.analyze(data);
+          dataStream.listen(
             (event) {
-              print(event);
               emit(GraphDataAdded(data: event));
             },
             onDone: () {
