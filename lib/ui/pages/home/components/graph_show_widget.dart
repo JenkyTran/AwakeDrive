@@ -33,6 +33,8 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
           meditationData.add(state.data.meditation.toDouble());
         }
         return LineChart(
+          duration: Duration.zero,
+          curve: Curves.easeIn,
           LineChartData(
             // gridData: const FlGridData(show: true),
             // titlesData: const FlTitlesData(show: true),
@@ -41,6 +43,21 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
             maxX: 50,
             minY: 0,
             maxY: 120,
+            gridData: FlGridData(
+              // checkToShowHorizontalLine: (v) => v % 20 == 0,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (v) => FlLine(
+                color: Colors.blueGrey.withAlpha(64),
+                dashArray: [5, 10],
+                strokeWidth: 1,
+              ),
+              horizontalInterval: 20,
+            ),
+            clipData: const FlClipData.all(),
+            titlesData: const FlTitlesData(
+              topTitles: AxisTitles(axisNameWidget: SizedBox()),
+              rightTitles: AxisTitles(axisNameWidget: SizedBox()),
+            ),
             // Assuming attention and meditation range from 0 to 100
             lineBarsData: [
               LineChartBarData(
