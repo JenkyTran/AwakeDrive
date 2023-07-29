@@ -40,7 +40,7 @@ class _MindLinkDataGraphState extends State<MindLinkDataGraph> {
             // titlesData: const FlTitlesData(show: true),
             borderData: FlBorderData(show: true),
             minX: 0,
-            maxX: 50,
+            maxX: 30,
             minY: 0,
             maxY: 120,
             gridData: FlGridData(

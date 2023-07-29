@@ -20,9 +20,9 @@ class GraphDataCubit extends Cubit<GraphDataState> {
     while (true) {
       await Future.delayed(const Duration(milliseconds: 1000));
       yield MindLinkData(
-        poorQuality: Random(DateTime.now().millisecondsSinceEpoch % 23).nextInt(10) + 1,
-        attention: Random(DateTime.now().millisecondsSinceEpoch % 31).nextInt(100) + 1,
-        meditation: Random(DateTime.now().millisecondsSinceEpoch % 47).nextInt(100) + 1,
+        poorQuality: Random(DateTime.now().millisecondsSinceEpoch % 19).nextInt(10) + 1,
+        attention: Random(DateTime.now().millisecondsSinceEpoch % 23).nextInt(50) + 31,
+        meditation: Random(DateTime.now().millisecondsSinceEpoch % 29).nextInt(50) + 31,
       );
     }
   }
